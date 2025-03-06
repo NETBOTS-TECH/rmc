@@ -98,21 +98,21 @@ export default function AboutPreview() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <img
-                src="/placeholder.svg?height=300&width=300"
+                src="https://rmc-five.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F01.f1fb0a99.webp&w=640&q=75"
                 alt="Concrete repair work"
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-[300px] object-cover"
               />
               <img
-                src="/placeholder.svg?height=400&width=300"
+                src="https://rmc-five.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F02.dab248fe.webp&w=640&h=300&q=75"
                 alt="Foundation repair"
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-[300px] object-cover"
               />
             </div>
             <div className="mt-8">
               <img
-                src="/placeholder.svg?height=500&width=300"
+                src="https://rmc-five.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F03.763c49c3.webp&w=640&q=75"
                 alt="Concrete leveling"
-                className="rounded-lg w-full h-auto object-cover"
+                className="rounded-lg w-full h-[300px] object-cover"
               />
             </div>
           </div>

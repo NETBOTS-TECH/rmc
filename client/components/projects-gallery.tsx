@@ -1,30 +1,31 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 const projects = [
   {
     id: 1,
     title: "Driveway Leveling",
     category: "Residential",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "https://www.usginc.net/wp-content/uploads/2023/08/USG-Driveway-Leveling--1024x536.png",
   },
   {
     id: 2,
     title: "Commercial Foundation Repair",
     category: "Commercial",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "https://tse3.mm.bing.net/th?id=OIP.8n9wkgl3Szf2dW6qYeaCLgHaE1&pid=Api&P=0&h=220",
   },
   {
     id: 3,
     title: "Basement Floor Repair",
     category: "Residential",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "https://americandry.com/wp-content/uploads/2019/08/news-adbs-fixing-concrete-floor.jpg",
   },
   {
     id: 4,
     title: "Sidewalk Replacement",
     category: "Municipal",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "https://tse3.mm.bing.net/th?id=OIP.eNZ1irS6NXK9Fopp8ndIVQHaFj&pid=Api&P=0&h=220",
   },
 ]
 
@@ -45,9 +46,11 @@ export default function ProjectsGallery() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((project) => (
             <div key={project.id} className="group relative overflow-hidden rounded-lg service-card">
-              <img
+              <Image
                 src={project.image || "/placeholder.svg"}
                 alt={project.title}
+                height={100}
+                width={100}
                 className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">

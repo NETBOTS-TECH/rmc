@@ -19,10 +19,12 @@ export default function CallToAction() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-gray-900 transition-all duration-300 hover:shadow-lg"
+              className="border-white text-dark hover:bg-white hover:text-gray-900 transition-all duration-300 hover:shadow-lg"
             >
-              <Phone className="mr-2 h-5 w-5" />
-              <span>720-555-1234</span>
+             <Phone className="h-5 w-5 text-primary mr-3" />
+                <a href="tel:720-555-1234" className="text-primary hover:text-primary transition-colors">
+                  720-555-1234
+                </a>
             </Button>
           </div>
         </div>

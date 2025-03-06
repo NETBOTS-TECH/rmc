@@ -7,7 +7,7 @@ const testimonials = [
     location: "Denver, CO",
     rating: 5,
     text: "Repair my Concrete did an amazing job leveling my driveway. The team was professional, efficient, and the results exceeded my expectations. I highly recommend their services!",
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://rmc-five.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F05.c4ee9317.webp&w=128&q=75",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ const testimonials = [
     location: "Boulder, CO",
     rating: 5,
     text: "We had severe foundation issues in our home, and Repair my Concrete provided excellent service from start to finish. They explained everything clearly and completed the work on time and within budget.",
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://rmc-five.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F01.248d4c16.webp&w=96&q=75",
   },
   {
     id: 3,
@@ -23,7 +23,7 @@ const testimonials = [
     location: "Colorado Springs, CO",
     rating: 5,
     text: "I'm extremely satisfied with the concrete repair work done on my garage floor. The team was knowledgeable, courteous, and the quality of work was outstanding. Will definitely use them again!",
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://rmc-five.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F06.97984971.webp&w=128&q=75",
   },
 ]
 

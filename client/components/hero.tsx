@@ -7,23 +7,24 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const slides = [
   {
-    image: "/placeholder.svg?height=800&width=1920",
+    image: "https://kentcompanies.nyc3.cdn.digitaloceanspaces.com/production/general/_1200x1534_crop_center-center_82_line/structure-bw.png",
     title: "Colorado's Premier Concrete Repair Specialists",
     description:
       "Professional concrete repair, leveling, and foundation services for residential and commercial properties throughout Colorado.",
   },
   {
-    image: "/placeholder.svg?height=800&width=1920",
+    image: "https://rmc-five.vercel.app/_next/static/media/01.4b47e3e0.webp",
     title: "Expert Foundation Repair Services",
     description:
       "Trust our experienced team to diagnose and fix your foundation issues, ensuring the stability of your property.",
   },
   {
-    image: "/placeholder.svg?height=800&width=1920",
+    image: "https://kingcrete.com/assets/images/home2-slider-banner-img-03.jpg",
     title: "Concrete Leveling Solutions",
     description: "Restore the safety and appearance of your concrete surfaces with our advanced leveling techniques.",
   },
 ]
+
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)

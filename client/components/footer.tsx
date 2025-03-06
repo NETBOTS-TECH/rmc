@@ -2,12 +2,29 @@ import Link from "next/link"
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useEffect, useState } from "react";
 export default function Footer() {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const response = await fetch(`${process.env.BASE_URL}/api/services`); // Replace with actual API URL
+        const data = await response.json();
+        setServices(data); // Assuming API returns an array of services
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    }
+
+    fetchServices();
+  }, []);
   return (
     <footer className="bg-gray-900 text-white">
       {/* Newsletter Section */}
-      <div className="border-b border-gray-800">
+      {/* <div className="border-b border-gray-800">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
@@ -31,7 +48,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-16">
@@ -61,12 +78,12 @@ export default function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://discord.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-gray-800 hover:bg-primary transition-colors p-2 rounded-full"
               >
-                <Twitter className="h-5 w-5" />
+                 <FontAwesomeIcon icon={faDiscord} size="1x" className="text-light" />
               </a>
             </div>
           </div>
@@ -124,48 +141,16 @@ export default function Footer() {
           <div className="space-y-6">
             <h3 className="text-xl font-bold">Our Services</h3>
             <div className="grid grid-cols-1 gap-3">
-              <Link
-                href="/services/concrete-repair"
-                className="text-gray-300 hover:text-primary transition-colors flex items-center"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                Concrete Repair
-              </Link>
-              <Link
-                href="/services/concrete-leveling"
-                className="text-gray-300 hover:text-primary transition-colors flex items-center"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                Concrete Leveling
-              </Link>
-              <Link
-                href="/services/foundation-repair"
-                className="text-gray-300 hover:text-primary transition-colors flex items-center"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                Foundation Repair
-              </Link>
-              <Link
-                href="/services/basement-waterproofing"
-                className="text-gray-300 hover:text-primary transition-colors flex items-center"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                Waterproofing
-              </Link>
-              <Link
-                href="/services/new-concrete-installation"
-                className="text-gray-300 hover:text-primary transition-colors flex items-center"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                New Concrete
-              </Link>
-              <Link
-                href="/services/commercial-concrete-leveling"
-                className="text-gray-300 hover:text-primary transition-colors flex items-center"
-              >
-                <ArrowRight className="h-4 w-4 mr-2" />
-                Commercial Services
-              </Link>
+            {services.length > 0 ? (
+                services.slice(0,7).map((service:any) => (
+                  <Link key={service._id} href={`/services/description?id=${service._id}`} className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    {service.name}
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-400">Loading services...</p>
+              )}
             </div>
           </div>
 

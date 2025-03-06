@@ -1,60 +1,69 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Eye, Search } from "lucide-react"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Eye, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-// Dummy data for inquiries
-const dummyInquiries = [
-  { id: 1, name: "John Doe", email: "john@example.com", subject: "Quote Request", date: "2023-07-15", status: "New" },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    subject: "Service Inquiry",
-    date: "2023-07-14",
-    status: "In Progress",
-  },
-  {
-    id: 3,
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    subject: "Complaint",
-    date: "2023-07-13",
-    status: "Resolved",
-  },
-  { id: 4, name: "Alice Brown", email: "alice@example.com", subject: "Feedback", date: "2023-07-12", status: "New" },
-  {
-    id: 5,
-    name: "Charlie Davis",
-    email: "charlie@example.com",
-    subject: "Partnership Proposal",
-    date: "2023-07-11",
-    status: "In Progress",
-  },
-]
+// Define the type for an Inquiry
+interface Inquiry {
+  message: string;
+  id: number;
+  name: string;
+  email: string;
+  subject: string;
+  date: string; // ISO date string
+}
 
+// Admin Inquiries Component
 export default function AdminInquiries() {
-  const [inquiries, setInquiries] = useState(dummyInquiries)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
+  // Fetch all inquiries from the API
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      try {
+        const response = await axios.get(`${process.env.BASE_URL}/api/contacts`);
+        setInquiries(response.data);
+      } catch (error) {
+        console.error("Error fetching inquiries:", error);
+      }
+    };
+
+    fetchInquiries();
+  }, []);
+
+  // Filter inquiries based on search term
   const filteredInquiries = inquiries.filter(
     (inquiry) =>
       inquiry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       inquiry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      inquiry.subject.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      inquiry.subject.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const totalPages = Math.ceil(filteredInquiries.length / itemsPerPage)
+  const paginatedContact = filteredInquiries.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  // Handle opening the modal
+  const handleViewInquiry = (inquiry: Inquiry) => {
+    setSelectedInquiry(inquiry);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Inquiries</h1>
+      <h1 className="text-3xl font-bold mb-6">Contact </h1>
 
       <div className="mb-4 relative">
         <Input
-          placeholder="Search inquiries..."
+          placeholder="Search contact..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -68,43 +77,51 @@ export default function AdminInquiries() {
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Subject</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Status</TableHead>
+           
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredInquiries.map((inquiry) => (
+          {paginatedContact.map((inquiry:any) => (
             <TableRow key={inquiry.id}>
               <TableCell>{inquiry.name}</TableCell>
               <TableCell>{inquiry.email}</TableCell>
               <TableCell>{inquiry.subject}</TableCell>
-              <TableCell>{inquiry.date}</TableCell>
+             
               <TableCell>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    inquiry.status === "New"
-                      ? "bg-green-200 text-green-800"
-                      : inquiry.status === "In Progress"
-                        ? "bg-yellow-200 text-yellow-800"
-                        : "bg-blue-200 text-blue-800"
-                  }`}
-                >
-                  {inquiry.status}
-                </span>
-              </TableCell>
-              <TableCell>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/admin/inquiries/${inquiry.id}`}>
-                    <Eye className="mr-2 h-4 w-4" /> View
-                  </Link>
+                <Button variant="outline" size="sm" onClick={() => handleViewInquiry(inquiry)}>
+                  <Eye className="mr-2 h-4 w-4" /> View
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </div>
-  )
-}
 
+      {/* Inquiry Details Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Inquiry Details</DialogTitle>
+          </DialogHeader>
+          {selectedInquiry && (
+            <div className="space-y-4">
+              <p><strong>Name:</strong> {selectedInquiry.name}</p>
+              <p><strong>Email:</strong> {selectedInquiry.email}</p>
+              <p><strong>Subject:</strong> {selectedInquiry.subject}</p>
+              <p><strong>Message:</strong> {selectedInquiry.message}</p>
+             
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      <div className="mt-4 flex justify-center gap-2">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <Button key={index} variant={currentPage === index + 1 ? "default" : "outline"} onClick={() => setCurrentPage(index + 1)}>
+            {index + 1}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}

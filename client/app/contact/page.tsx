@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import axios from "axios";
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,7 +21,7 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -37,23 +37,32 @@ export default function ContactPage() {
     }))
   }
 
+ 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
+    e.preventDefault();
+    setIsSubmitting(true);
+  
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Show success state
-      setIsSubmitted(true)
+      const updatedFormData = { ...formData, status: "new" };
+ console.log("object,", updatedFormData)
+      const response = await axios.post(`${process.env.BASE_URL}/api/contacts`, updatedFormData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.status !== 200) {
+        throw new Error("Failed to submit the form.");
+      }
+  
+      setIsSubmitted(true);
     } catch (error) {
-      console.error("Error submitting form:", error)
+      console.error("Error submitting form:", error);
+      alert("An error occurred. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-
+  };
   if (isSubmitted) {
     return (
       <div className="pt-24 pb-16 md:pt-32 md:pb-24">

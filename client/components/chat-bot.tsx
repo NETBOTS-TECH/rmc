@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { chatbotData } from "@/data/chatbot-data"
 import { useToast } from "@/components/ui/use-toast"
 import { io } from "socket.io-client"
-
+import axios from "axios"
 // Define message types
 type Message = {
   id: string
@@ -49,11 +49,11 @@ export default function ChatBot() {
 
   useEffect(() => {
     // Initialize socket connection
-    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001")
+    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || process.env.BASE_URL)
     setSocket(socketInstance)
 
     // Initialize audio
-    messageSoundRef.current = new Audio("/sounds/message.mp3")
+    messageSoundRef.current = new Audio("https://www.fesliyanstudios.com/play-mp3/4380")
 
     // Show chatbot after 3 seconds
     const timer = setTimeout(() => {
@@ -325,7 +325,30 @@ export default function ChatBot() {
       setAgentConnected(false)
     }
   }
+  const handleSubmitUserInfo = async () => {
+    try {
+      await axios.post(`${process.env.BASE_URL}/api/chat-user`, userInfo)
+      // simulateTyping(
+      //   "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs."
+      // )
+      // toast({
+      //   title: "Contact Request Submitted",
+      //   description: "We'll get back to you as soon as possible!",
+      //   duration: 5000,
+      // })
+    } catch (error) {
+      console.error("Error submitting contact info:", error)
+      // simulateTyping(
+      //   "I'm sorry, there was an error submitting your information. Please try again or call us directly at 720-555-1234."
+      // )
+    }
+  }
 
+  useEffect(() => {
+    if (!collectingUserInfo && userInfo.name && userInfo.email && userInfo.phone && userInfo.issue) {
+      handleSubmitUserInfo()
+    }
+  }, [collectingUserInfo])
   if (!showChatbot) {
     return null
   }

@@ -1,35 +1,31 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+"use client"; // Ensure this runs in the client side
 
-const inter = Inter({ subsets: ["latin"] })
+import { usePathname } from "next/navigation"; // Import usePathname
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { Toaster } from "@/components/ui/toaster";
 
-export const metadata: Metadata = {
-  title: "Repair my Concrete | Colorado's Concrete Repair Specialists",
-  description:
-    "Professional concrete repair, leveling, and foundation services for residential and commercial properties throughout Colorado.",
-}
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  const isAdminPage =
-    typeof window !== "undefined" &&
-    (window.location.pathname.startsWith("/admin") || window.location.pathname === "/login")
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname(); // Get the current route
+  const isAdminLayout = pathname.startsWith("/admin") || pathname === "/login"; // Check if the layout is admin
 
   return (
     <html lang="en">
       <body className={inter.className}>
-        {!isAdminPage && <Header />}
+        {/* Exclude Header & Footer for admin layout */}
+        {!isAdminLayout && <Header />}
         {children}
-        {!isAdminPage && <Footer />}
+        {!isAdminLayout && <Footer />}
+        <Toaster />
       </body>
     </html>
-  )
+  );
 }
-

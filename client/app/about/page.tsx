@@ -36,7 +36,7 @@ export default function AboutPage() {
           </div>
           <div>
             <img
-              src="/placeholder.svg?height=500&width=600"
+              src="https://cdn.homedit.com/wp-content/uploads/2017/05/Amazing-house-architecture-with-concrete-ceiling-deck.jpg"
               alt="Repair my Concrete team"
               className="rounded-lg shadow-lg w-full h-auto"
             />
@@ -133,10 +133,10 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "John Smith", title: "Founder & CEO", image: "/placeholder.svg?height=300&width=300" },
-              { name: "Sarah Johnson", title: "Operations Manager", image: "/placeholder.svg?height=300&width=300" },
-              { name: "Mike Williams", title: "Lead Technician", image: "/placeholder.svg?height=300&width=300" },
-              { name: "Lisa Brown", title: "Customer Service Manager", image: "/placeholder.svg?height=300&width=300" },
+              { name: "John Smith", title: "Founder & CEO", image: "https://tse2.mm.bing.net/th?id=OIP.BLFXBzfWeDCHY2Rk1S7LHgHaHa&pid=Api&P=0&h=220" },
+              { name: "Sarah Johnson", title: "Operations Manager", image: "https://tse1.mm.bing.net/th?id=OIP.I_dzLmkTIT3klVsN3L_tNQHaEK&pid=Api&P=0&h=220" },
+              { name: "Mike Williams", title: "Lead Technician", image: "https://static1.colliderimages.com/wordpress/wp-content/uploads/2022/09/StrangerThings_Season-4_Finn-Wolfhard.jpg" },
+              { name: "Lisa Brown", title: "Customer Service Manager", image: "https://i0.wp.com/www.fashionchingu.com/wp-content/uploads/2021/12/Lisa-Blackpink-Brown-Suit-Jacket-And-Trousers-Set-6.jpg" },
             ].map((member, index) => (
               <div
                 key={index}
@@ -156,7 +156,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
           <div>
             <img
-              src="/placeholder.svg?height=500&width=600"
+              src="https://tse1.mm.bing.net/th?id=OIP.CB6a0YuQYPYsDatqk7lydQHaE8&pid=Api&P=0&h=100%"
               alt="Concrete repair work"
               className="rounded-lg shadow-lg w-full h-auto"
             />

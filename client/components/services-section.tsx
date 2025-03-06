@@ -1,11 +1,44 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { servicesData } from "@/data/services-data"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+const API_URL = `${process.env.BASE_URL}/api/services` // Update if hosted elsewhere
+
+interface Service {
+  _id: string
+  title: string
+  shortDescription: string
+  image: string
+  slug: string
+}
+
 export default function ServicesSection() {
-  // Display only the first 6 services
-  const displayedServices = servicesData.residential.slice(0, 6)
+  const [services, setServices] = useState<Service[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(API_URL)
+        if (!response.ok) throw new Error("Failed to fetch services")
+        const data: Service[] = await response.json()
+        setServices(data.slice(0, 6)) // Only show 6 services
+      } catch (err) {
+        setError("Error fetching services")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchServices()
+  }, [])
+
+  if (loading) return <p className="text-center text-gray-600">Loading services...</p>
+  if (error) return <p className="text-center text-red-500">{error}</p>
 
   return (
     <section className="py-16 md:py-24">
@@ -22,18 +55,21 @@ export default function ServicesSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayedServices.map((service) => (
-            <div key={service.id} className="bg-white rounded-lg shadow-md overflow-hidden service-card">
+          {services.map((service:any) => (
+            <div key={service._id} className="bg-white rounded-lg shadow-md overflow-hidden service-card">
               <img
-                src={service.image || "/placeholder.svg?height=200&width=400"}
+                src={service.image || "/placeholder.svg"}
                 alt={service.title}
                 className="w-full h-48 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.shortDescription}</p>
+                <h3 className="text-xl font-bold mb-3">{service.name}</h3>
+                <p className="text-gray-600 mb-4">
+  {service.description.length > 60 ? service.description.substring(0, 60) + "..." : service.description}
+</p>
+
                 <Link
-                  href={`/services/${service.slug}`}
+                  href={`/services/description?id=${service._id}`}
                   className="inline-flex items-center text-primary font-medium hover:underline transition-all duration-200 hover:translate-x-1"
                 >
                   Learn More <ArrowRight className="ml-2 h-4 w-4" />
@@ -52,4 +88,3 @@ export default function ServicesSection() {
     </section>
   )
 }
-

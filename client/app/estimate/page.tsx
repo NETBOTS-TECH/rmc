@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import axios from "axios"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Upload, X, FileText } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-
+const API_URL = `${process.env.BASE_URL}/api/services/`;
 export default function EstimatePage() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -27,13 +27,7 @@ export default function EstimatePage() {
     city: "",
     state: "CO",
     zipCode: "",
-    services: {
-      concreteLeveling: false,
-      foundationRepair: false,
-      waterproofing: false,
-      newConcrete: false,
-      egressWindow: false,
-    },
+    services: {} as Record<string, boolean>, // Allow dynamic keys
     schedulePreference: "present",
     propertyType: "",
     details: "",
@@ -42,6 +36,7 @@ export default function EstimatePage() {
   const [files, setFiles] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [services,setServices] = useState([])
   const { toast } = useToast()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -95,48 +90,66 @@ export default function EstimatePage() {
     setFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      // Create form data for file upload
-      const formDataToSend = new FormData()
+  try {
+    const formDataToSend = new FormData();
 
-      // Append JSON data
-      formDataToSend.append("data", JSON.stringify(formData))
+    // Extract selected services as an object with key-value pairs
+    const selectedServices = Object.entries(formData.services)
+      .filter(([_, value]) => value) // Keep only selected (true) services
+      .reduce((acc, [key]) => ({ ...acc, [key]: key }), {}); // Convert to { concreteLeveling: "concreteLeveling" }
 
-      // Append files
-      files.forEach((file) => {
-        formDataToSend.append("files", file)
-      })
+    // Append each field separately
+    Object.entries({
+      ...formData,
+      services: JSON.stringify(selectedServices), // Ensure backend gets proper object
+      status: "pending",
+    }).forEach(([key, value]) => {
+      formDataToSend.append(key, value as string); // Convert value to string before appending
+    });
 
-      // Send to API
-      const response = await fetch("/api/estimate", {
-        method: "POST",
-        body: formDataToSend,
-      })
+    // Append files
+    files.forEach((file) => {
+      formDataToSend.append("images", file);
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit estimate request")
-      }
+    // Send to API using Axios
+    const response = await axios.post(`${process.env.BASE_URL}/api/estimates`, formDataToSend, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-      // Show success state
-      setIsSubmitted(true)
+    if (response.status !== 201) throw new Error("Failed to submit estimate request");
 
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    } catch (error) {
-      console.error("Error submitting form:", error)
-      toast({
-        title: "Error",
-        description: "There was a problem submitting your request. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
+    setIsSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    toast({
+      title: "Error",
+      description: "There was a problem submitting your request. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsSubmitting(false);
   }
+};
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      setServices(data);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
 
   if (isSubmitted) {
     return (
@@ -157,9 +170,9 @@ export default function EstimatePage() {
               <p className="text-lg mb-6">
                 We've received your estimate request and our team will get back to you shortly.
               </p>
-              <p className="mb-6">
+              {/* <p className="mb-6">
                 A confirmation email has been sent to <strong>{formData.email}</strong>.
-              </p>
+              </p> */}
               <Button asChild className="btn-hover transition-all duration-300 hover:shadow-lg">
                 <a href="/">Return to Home</a>
               </Button>
@@ -288,61 +301,24 @@ export default function EstimatePage() {
               <div>
                 <h2 className="text-xl font-bold mb-4 text-primary">Service Details</h2>
                 <div className="space-y-6">
-                  <div>
-                    <Label className="text-base font-medium mb-3 block">Services Interested In:</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="concreteLeveling"
-                          checked={formData.services.concreteLeveling}
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange("services.concreteLeveling", checked as boolean)
-                          }
-                        />
-                        <Label htmlFor="concreteLeveling">Concrete Leveling</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="foundationRepair"
-                          checked={formData.services.foundationRepair}
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange("services.foundationRepair", checked as boolean)
-                          }
-                        />
-                        <Label htmlFor="foundationRepair">Foundation Repair</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="waterproofing"
-                          checked={formData.services.waterproofing}
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange("services.waterproofing", checked as boolean)
-                          }
-                        />
-                        <Label htmlFor="waterproofing">Waterproofing</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="newConcrete"
-                          checked={formData.services.newConcrete}
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange("services.newConcrete", checked as boolean)
-                          }
-                        />
-                        <Label htmlFor="newConcrete">New Concrete</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="egressWindow"
-                          checked={formData.services.egressWindow}
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange("services.egressWindow", checked as boolean)
-                          }
-                        />
-                        <Label htmlFor="egressWindow">Egress Window</Label>
-                      </div>
-                    </div>
-                  </div>
+                <div>
+  <Label className="text-base font-medium mb-3 block">Services Interested In:</Label>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    {services.map((service:any) => (
+      <div key={service._id} className="flex items-center space-x-2">
+        <Checkbox
+          id={service._id}
+          checked={formData.services[service.name] || false}
+          onCheckedChange={(checked) =>
+            handleCheckboxChange(`services.${service.name}`, checked as boolean)
+          }
+        />
+        <Label htmlFor={service._id}>{service.name}</Label>
+      </div>
+    ))}
+  </div>
+</div>
+
 
                   <div>
                     <Label className="text-base font-medium mb-3 block">Estimate Scheduling Preference:</Label>
@@ -389,8 +365,7 @@ export default function EstimatePage() {
                       <SelectContent>
                         <SelectItem value="residential">Residential</SelectItem>
                         <SelectItem value="commercial">Commercial</SelectItem>
-                        <SelectItem value="industrial">Industrial</SelectItem>
-                        <SelectItem value="municipal">Municipal</SelectItem>
+                      
                       </SelectContent>
                     </Select>
                   </div>
