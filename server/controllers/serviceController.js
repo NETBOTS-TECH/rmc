@@ -20,7 +20,7 @@ console.log(image)
 // Get All Services
 exports.getAllServices = async (req, res) => {
   try {
-    const services = await Service.find();
+    const services = await Service.find().sort({_id:-1});
     res.json(services);
   } catch (error) {
     res.status(500).json({ message: "Error fetching services" });

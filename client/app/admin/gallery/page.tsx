@@ -55,7 +55,7 @@ export default function Gallery() {
       }
   
       const newImage: Image = await response.json();
-      setImages((prev) => [...prev, newImage]);
+      setImages((prev) => [newImage,...prev]);
       setFile(null);
       toast({ title: "Success", description: "File uploaded successfully", })
     } catch (error) {

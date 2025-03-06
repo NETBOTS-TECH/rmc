@@ -3,7 +3,7 @@ const Image = require("../models/Image");
 // Get all images
 const getAllImages = async (req, res) => {
   try {
-    const images = await Image.find();
+    const images = await Image.find().sort({_id:-1});
     res.json(images);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });

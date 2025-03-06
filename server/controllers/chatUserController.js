@@ -29,13 +29,14 @@ module.exports = { createChatUser };
 // @desc Get all chat users
 // @route GET /api/chat-users
 const getChatUsers = async (req, res) => {
-  try {
-    const chatUsers = await ChatUser.find();
-    res.json(chatUsers);
-  } catch (error) {
-    res.status(500).json({ message: "Server Error" });
-  }
-};
+    try {
+      const chatUsers = await ChatUser.find().sort({ _id: -1 }); // Sort by newest first
+      res.json(chatUsers);
+    } catch (error) {
+      res.status(500).json({ message: "Server Error" });
+    }
+  };
+  
 
 module.exports = {
   createChatUser,

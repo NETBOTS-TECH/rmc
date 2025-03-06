@@ -47,7 +47,7 @@ const updateEstimateStatus = async (req, res) => {
 // Get All Estimates
 const getAllEstimates = async (req, res) => {
   try {
-    const estimates = await Estimate.find();
+    const estimates = await Estimate.find().sort({_id:-1});
     res.status(200).json({ success: true, estimates });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

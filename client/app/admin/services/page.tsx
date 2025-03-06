@@ -79,7 +79,8 @@ export default function AdminServices() {
         body: formData,
       });
       const addedService: Service = await response.json();
-      setServices([...services, addedService]);
+      setServices([addedService, ...services]);
+
       setIsAddModalOpen(false);
       setNewService({ name: "", description: "", image: null, category: "residential" });
       toast({ title: "Success", description: "Service added successfully" })
