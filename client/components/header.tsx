@@ -128,7 +128,7 @@ export default function Header() {
       {residentialServices.map((service: any) => (
         <DropdownMenuItem key={service._id} asChild>
           <Link 
-            href={`/services/description?id=${service._id}`} 
+            href={`/description?id=${service._id}`} 
             className="block text-center px-3 py-2 rounded hover:bg-gray-200"
             style={{ whiteSpace: "normal", overflow: "visible", textAlign: "left" }} // Ensures full text is visible
           >
@@ -153,7 +153,7 @@ export default function Header() {
       {commercialServices.map((service: any) => (
         <DropdownMenuItem key={service._id} asChild>
           <Link 
-            href={`/services/description?id=${service._id}`} 
+            href={`/description?id=${service._id}`} 
             className="block text-center px-3 py-2 rounded hover:bg-gray-200"
             style={{ whiteSpace: "normal", overflow: "visible", textAlign: "left" }}
           >
@@ -223,7 +223,7 @@ export default function Header() {
               {isResidentialOpen && (
                 <div className="pl-4 space-y-2">
                   {residentialServices.map((service: any) => (
-                    <Link key={service._id} href={`/services/description?id=${service._id}`} className="block hover:text-primary">
+                    <Link key={service._id} href={`/description?id=${service._id}`} className="block hover:text-primary">
                       {service.name}
                     </Link>
                   ))}
@@ -238,7 +238,7 @@ export default function Header() {
               {isCommercialOpen && (
                 <div className="pl-4 space-y-2">
                   {commercialServices.map((service: any) => (
-                    <Link key={service._id} href={`/services/description?id=${service._id}`} className="block hover:text-primary">
+                    <Link key={service._id} href={`/description?id=${service._id}`} className="block hover:text-primary">
                       {service.name}
                     </Link>
                   ))}

@@ -69,7 +69,7 @@ export default function ServicesSection() {
 </p>
 
                 <Link
-                  href={`/services/description?id=${service._id}`}
+                  href={`/description?id=${service._id}`}
                   className="inline-flex items-center text-primary font-medium hover:underline transition-all duration-200 hover:translate-x-1"
                 >
                   Learn More <ArrowRight className="ml-2 h-4 w-4" />

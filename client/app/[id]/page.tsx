@@ -55,7 +55,7 @@ export default function ServicePage() {
     </div>
   );
   
-  
+  // 
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!service) return <p className="text-center text-red-500">Service not found</p>;
 
@@ -118,7 +118,7 @@ export default function ServicePage() {
                   <h3 className="text-xl font-bold mb-3">{relatedService.name}</h3>
                   <p className="text-gray-600 mb-4">{relatedService.description.substring(0, 100)}...</p>
                   <Link
-                    href={`/services/description?id=${relatedService._id}`}
+                    href={`/description?id=${relatedService._id}`}
                     className="inline-flex items-center text-primary font-medium hover:underline transition-all duration-200 hover:translate-x-1"
                   >
                     Learn More <ArrowRight className="ml-2 h-4 w-4" />

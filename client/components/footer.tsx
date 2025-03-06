@@ -143,7 +143,7 @@ export default function Footer() {
             <div className="grid grid-cols-1 gap-3">
             {services.length > 0 ? (
                 services.slice(0,7).map((service:any) => (
-                  <Link key={service._id} href={`/services/description?id=${service._id}`} className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <Link key={service._id} href={`/description?id=${service._id}`} className="text-gray-300 hover:text-primary transition-colors flex items-center">
                     <ArrowRight className="h-4 w-4 mr-2" />
                     {service.name}
                   </Link>

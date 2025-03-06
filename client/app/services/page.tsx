@@ -79,7 +79,7 @@ export default function ServicesPage() {
 </p>
 
                     <Button asChild>
-                      <Link href={`/services/description?id=${service._id}`}>Learn More</Link>
+                      <Link href={`/description?id=${service._id}`}>Learn More</Link>
                     </Button>
                   </div>
                 </div>
@@ -107,7 +107,7 @@ export default function ServicesPage() {
 </p>
 
                     <Button asChild>
-                      <Link href={`/services/description?id=${service._id}`}>Learn More</Link>
+                      <Link href={`/description?id=${service._id}`}>Learn More</Link>
                     </Button>
                   </div>
                 </div>
