@@ -63,7 +63,7 @@ export default function ProjectsGallery() {
 
         <div className="text-center mt-12">
           <Button asChild className="btn-hover transition-all duration-300 hover:shadow-lg">
-            <Link href="/gallery">View All Projects</Link>
+            <Link href="/gallery">View Projects Gallery</Link>
           </Button>
         </div>
       </div>

@@ -18,7 +18,7 @@ const Gallery = () => {
   useEffect(() => {
     fetchImages();
   }, []);
-
+ 
   const fetchImages = async () => {
     try {
       const response = await fetch(API_URL);
@@ -33,7 +33,7 @@ const Gallery = () => {
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Gallery</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center ">
         {images.length > 0 ? (
           images.map((image) => (
             <Card key={image._id} className="relative w-[300px] h-[300px] overflow-hidden">
@@ -51,7 +51,8 @@ const Gallery = () => {
             </Card>
           ))
         ) : (
-          <p className="text-gray-500 text-center col-span-full">No images available.</p>
+          
+          <p className="text-gray-500 text-center col-span-full">No images available. </p>
         )}
       </div>
       <ChatBot />

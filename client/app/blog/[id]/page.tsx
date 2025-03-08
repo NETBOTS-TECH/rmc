@@ -41,7 +41,12 @@ export default function BlogDetail() {
     if (id) fetchBlog()
   }, [id])
 
-  if (!blog) return <p className="text-center py-16 text-gray-500 text-lg">Loading...</p>
+  if (!blog) return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="w-40 h-40 border-8 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+      <p className="mt-4 text-lg text-gray-600">Loading...</p>
+    </div>
+  );
 
   return (
     <div className="container mx-auto py-12 px-6 max-w-3xl">
@@ -64,11 +69,11 @@ export default function BlogDetail() {
             {section.image && (
               <figure className="my-8">
                 <div className="overflow-hidden rounded-xl shadow-md transition-all duration-500 hover:shadow-lg">
-                  <img
-                    src={section.image}
-                    alt={section.heading || "Blog Image"}
-                    className="w-full max-h-[450px] object-cover rounded-xl hover:scale-105 transition-transform duration-500"
-                  />
+                <img
+  src={section.image}
+  alt={section.heading || "Blog Image"}
+  className="w-full max-h-[560px] object-cover rounded-xl hover:scale-105 transition-transform duration-500"
+/>
                 </div>
                 {section.heading && section.image && !section.paragraph && (
                   <figcaption className="text-center mt-3 text-sm text-gray-500">{section.heading}</figcaption>

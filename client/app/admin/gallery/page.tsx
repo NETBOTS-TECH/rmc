@@ -92,7 +92,7 @@ export default function Gallery() {
       </div>
 
       {/* Gallery Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center ">
       {images.map((image) => (
   <Card key={image._id} style={{width:'300px', height:'300px'}} className="relative  overflow-hidden">
     <CardContent className="p-2 w-full h-full flex justify-center items-center">
@@ -117,7 +117,7 @@ export default function Gallery() {
 ))}
       </div>
 
-      {images.length === 0 && <p className="text-gray-500 text-center mt-4">No images uploaded.</p>}
+     <p className="text-gray-500 text-center mt-4">No images uploaded.</p>
     </div>
   );
 }
