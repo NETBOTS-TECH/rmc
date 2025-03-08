@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Hammer,
-  Image
+  Image,
+  MessageCircleMoreIcon
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -44,9 +45,11 @@ export default function AdminLayout({
     { icon: <Hammer className="h-5 w-5" />, label: "Services", href: "/admin/services" },
     { icon: <FileText className="h-5 w-5" />, label: "Estimates", href: "/admin/estimates" },
     { icon: <Users className="h-5 w-5" />, label: "Contacts", href: "/admin/inquiries" },
+    { icon: <MessageCircleMoreIcon className="h-5 w-5" />, label: "blogs", href: "/admin/blog" },
     { icon: <MessageSquare className="h-5 w-5" />, label: "Live Chat", href: "/admin/chat" },
     { icon: <Image className="h-5 w-5" />, label: "Gallery", href: "/admin/gallery" },
     { icon: <Settings className="h-5 w-5" />, label: "Settings", href: "/admin/settings" },
+
   ]
 
   return (

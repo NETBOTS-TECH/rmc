@@ -18,6 +18,7 @@ app.use("/api/estimates", require("./routes/estimateRoutes"));
 app.use("/api/contacts", require('./routes/contactRoutes'))
 app.use("/api/gallery", require("./routes/galleryRoutes"))
 app.use("/api/chat-user", require("./routes/chatRoutes"))
+app.use("/api/blogs", require("./routes/blogRoutes"))
 app.get("/", (req, res) => {
   res.send("🚀 API is running...");
 });

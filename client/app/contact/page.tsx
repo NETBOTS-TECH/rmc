@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
+import ChatBot from "@/components/chat-bot";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -280,6 +281,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <ChatBot />
     </div>
   )
 }

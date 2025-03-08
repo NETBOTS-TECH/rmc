@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input"
 import { chatbotData } from "@/data/chatbot-data"
 import { useToast } from "@/components/ui/use-toast"
 import { io } from "socket.io-client"
+const messageSoundURL = "https://www.fesliyanstudios.com/play-mp3/4315";
+const typingSoundURL = "https://www.fesliyanstudios.com/play-mp3/2763"; // Example typing sound
 import axios from "axios"
+import { usePathname } from "next/navigation"
 // Define message types
 type Message = {
   id: string
@@ -25,7 +28,7 @@ type UserInfo = {
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false)
-  const [showChatbot, setShowChatbot] = useState(false)
+  const [showChatbot, setShowChatbot] = useState(true)
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState("")
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([])
@@ -43,21 +46,40 @@ export default function ChatBot() {
   const [agentConnected, setAgentConnected] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
+  const messageSoundRef = useRef<HTMLAudioElement | null>(null);
+  const typingSoundRef = useRef<HTMLAudioElement | null>(null);
+const pathname = usePathname();
+  useEffect(() => {
+    // Initialize sounds
+    messageSoundRef.current = new Audio(messageSoundURL);
+    typingSoundRef.current = new Audio(typingSoundURL);
+  }, []);
 
-  // Sound effects
-  const messageSoundRef = useRef<HTMLAudioElement | null>(null)
+  const playMessageSound = () => {
+    if (messageSoundRef.current) {
+      messageSoundRef.current.play().catch((error) => console.error("Error playing message sound:", error));
+    }
+  };
 
+  const playTypingSound = () => {
+    if (typingSoundRef.current) {
+      typingSoundRef.current.play().catch((error) => console.error("Error playing typing sound:", error));
+    }
+  };
   useEffect(() => {
     // Initialize socket connection
     const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || process.env.BASE_URL)
     setSocket(socketInstance)
 
     // Initialize audio
-    messageSoundRef.current = new Audio("https://www.fesliyanstudios.com/play-mp3/4380")
+    // messageSoundRef.current = new Audio("https://www.fesliyanstudios.com/play-mp3/4380")
 
     // Show chatbot after 3 seconds
     const timer = setTimeout(() => {
-      setShowChatbot(true)
+      if(pathname === "/")
+      {
+      setIsOpen(true)
+      }
     }, 3000)
 
     // Initial greeting and suggested questions
@@ -110,15 +132,11 @@ export default function ChatBot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
-  const playMessageSound = () => {
-    if (messageSoundRef.current) {
-      messageSoundRef.current.play().catch((error) => console.error("Error playing sound:", error))
-    }
-  }
+ 
 
   const addMessage = (message: Message) => {
     setMessages((prev) => [...prev, message])
-    playMessageSound()
+    // playMessageSound()
   }
 
   const simulateTyping = (text: string, type: "bot" | "agent" = "bot") => {
@@ -130,12 +148,14 @@ export default function ChatBot() {
 
     // Simulate typing delay (1-2 seconds based on message length)
     const typingDelay = Math.min(1000 + text.length * 10, 2000)
+    playTypingSound();
 
     setTimeout(() => {
       // Remove typing indicator and add actual message
       setMessages((prev) => prev.filter((m) => m.id !== typingId))
       addMessage({ id: Date.now().toString(), type, text })
       setIsTyping(false)
+      playMessageSound();
     }, typingDelay)
   }
 
@@ -232,9 +252,9 @@ export default function ChatBot() {
           })
           .catch((error) => {
             console.error("Error submitting contact info:", error)
-            simulateTyping(
-              "I'm sorry, there was an error submitting your information. Please try again or call us directly at 720-555-1234.",
-            )
+            // simulateTyping(
+            //   "I'm sorry, there was an error submitting your information. Please try again or call us directly at 720-555-1234.",
+            // )
           })
       }
     } else if (liveAgentRequested && agentConnected) {
@@ -304,16 +324,16 @@ export default function ChatBot() {
   }
 
   const handleLiveAgentRequest = () => {
-    if (liveAgentRequested) {
-      simulateTyping("We're already trying to connect you with a live agent. Please wait a moment.")
-      return
-    }
+    // if (liveAgentRequested) {
+    //   simulateTyping("We're already trying to connect you with a live agent. Please wait a moment.")
+    //   return
+    // }
 
-    setLiveAgentRequested(true)
-    simulateTyping("I'm connecting you with a live agent. This may take a moment...")
-
+    // setLiveAgentRequested(true)
+    // simulateTyping("I'm connecting you with a live agent. This may take a moment...")
+    simulateTyping("Our agents are busy now.Will contact you when they are free...")
     // Emit request to server
-    socket.emit("request-agent", { userId: socket.id })
+    // socket.emit("request-agent", { userId: socket.id })
   }
 
   const handleClose = () => {
@@ -328,9 +348,9 @@ export default function ChatBot() {
   const handleSubmitUserInfo = async () => {
     try {
       await axios.post(`${process.env.BASE_URL}/api/chat-user`, userInfo)
-      // simulateTyping(
-      //   "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs."
-      // )
+      simulateTyping(
+        "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs. and will also send you a mail"
+      )
       // toast({
       //   title: "Contact Request Submitted",
       //   description: "We'll get back to you as soon as possible!",
@@ -338,9 +358,9 @@ export default function ChatBot() {
       // })
     } catch (error) {
       console.error("Error submitting contact info:", error)
-      // simulateTyping(
-      //   "I'm sorry, there was an error submitting your information. Please try again or call us directly at 720-555-1234."
-      // )
+      simulateTyping(
+        "I'm sorry, there was an error submitting your information. Please try again or call us directly at 720-555-1234."
+      )
     }
   }
 
@@ -353,6 +373,7 @@ export default function ChatBot() {
     return null
   }
 
+  
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {!isOpen ? (
@@ -383,6 +404,18 @@ export default function ChatBot() {
 
                 <div className="space-y-2">
                   <p className="text-gray-600 text-sm">Select a question or ask your own:</p>
+                  <button
+                        onClick={handleContactRequest}
+                        className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
+                      >
+                        I'd like to be contacted by your team
+                      </button>
+                      <button
+                        onClick={handleLiveAgentRequest}
+                        className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
+                      >
+                        Connect me with a live agent
+                      </button>
                   {suggestedQuestions.map((question, index) => (
                     <button
                       key={index}
@@ -437,15 +470,6 @@ export default function ChatBot() {
                   messages[messages.length - 1].type === "bot" && (
                     <div className="space-y-2 mt-4">
                       <p className="text-gray-600 text-xs">You might also want to know:</p>
-                      {suggestedQuestions.map((question, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleQuestionClick(question)}
-                          className="w-full text-left p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 mb-1 text-sm"
-                        >
-                          {question}
-                        </button>
-                      ))}
                       <button
                         onClick={handleContactRequest}
                         className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
@@ -458,6 +482,16 @@ export default function ChatBot() {
                       >
                         Connect me with a live agent
                       </button>
+                      {suggestedQuestions.map((question, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleQuestionClick(question)}
+                          className="w-full text-left p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200 mb-1 text-sm"
+                        >
+                          {question}
+                        </button>
+                      ))}
+                      
                     </div>
                   )}
 

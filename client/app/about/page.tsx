@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
+import ChatBot from "@/components/chat-bot"
 
 export default function AboutPage() {
   return (
@@ -249,8 +250,8 @@ export default function AboutPage() {
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-primary transition-all duration-300 hover:shadow-lg"
+              variant="secondary"
+              className="btn-hover  transition-all duration-300 hover:shadow-lg"
               asChild
             >
               <Link href="/contact">Contact Us</Link>
@@ -258,6 +259,7 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
+      <ChatBot />
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import ChatBot from "@/components/chat-bot"
 
 const API_URL = `${process.env.BASE_URL}/api/services` // Change this if hosted elsewhere
 
@@ -116,6 +117,7 @@ export default function ServicesPage() {
           </div>
         )}
       </div>
+      <ChatBot />
     </div>
   )
 }

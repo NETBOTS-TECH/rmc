@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ChatBot from "@/components/chat-bot";
 interface Service {
   _id: string;
   name: string;
@@ -139,6 +140,7 @@ export default function ServicePage() {
           </Button>
         </div>
       </div>
+      <ChatBot />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -71,8 +71,8 @@ export default function Header() {
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
               <Instagram className="h-4 w-4" />
             </a>
-            <a href="https://discord.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-            <FontAwesomeIcon icon={faDiscord} size="1x" className="text-light" />
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+            <FontAwesomeIcon icon={faLinkedin} size="1x" className="text-light" />
             </a>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function Header() {
 </DropdownMenu>
 
 
-            {menuData.mainMenu.slice(2).map((item:any) => (
+            {menuData.mainMenu.slice(3).map((item:any) => (
               <div key={item.id} className="relative group">
                 {item.hasDropdown ? (
                   <DropdownMenu>

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Upload, X, FileText } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import ChatBot from "@/components/chat-bot"
 const API_URL = `${process.env.BASE_URL}/api/services/`;
 export default function EstimatePage() {
   const [formData, setFormData] = useState({
@@ -448,6 +449,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
         </div>
       </div>
+      <ChatBot />
     </div>
   )
 }

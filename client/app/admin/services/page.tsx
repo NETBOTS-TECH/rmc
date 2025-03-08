@@ -28,7 +28,10 @@ export default function AdminServices() {
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [currentPage, setCurrentPage] = useState(1)
+  const [loading,setLoading]= useState(false);
+  const [deleting,setDeleting]= useState("");
   const itemsPerPage = 10
+  
   const [newService, setNewService] = useState({
     name: "",
     description: "",
@@ -52,12 +55,17 @@ export default function AdminServices() {
   };
 
   const handleDelete = async (id: string) => {
+    setDeleting(id);
+
     try {
       await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       setServices((prev) => prev.filter((service) => service._id !== id));
       toast({ title: "Success", description: "service deleted successfully", })
+      setDeleting("")
     } catch (error) {
       console.error("Error deleting service:", error);
+      toast({ title: "error", description: "service deletion failed", })
+      setDeleting("")
     }
   };
 
@@ -66,7 +74,7 @@ export default function AdminServices() {
       alert("Please fill in all fields.");
       return;
     }
-
+ setLoading(true);
     const formData = new FormData();
     formData.append("name", newService.name);
     formData.append("description", newService.description);
@@ -84,8 +92,11 @@ export default function AdminServices() {
       setIsAddModalOpen(false);
       setNewService({ name: "", description: "", image: null, category: "residential" });
       toast({ title: "Success", description: "Service added successfully" })
+      setLoading(false)
     } catch (error) {
       console.error("Error adding service:", error);
+      setLoading(false);
+      toast({ title: "failed", description: "Service can not be added" })
     }
   };
 
@@ -95,7 +106,7 @@ export default function AdminServices() {
       alert("Please fill in all fields.");
       return;
     }
-
+ setLoading(true);
     const formData = new FormData();
     formData.append("name", editingService.name);
     formData.append("description", editingService.description);
@@ -119,9 +130,12 @@ export default function AdminServices() {
       setIsEditModalOpen(false);
       setEditingService(null);
       setSelectedImage(null);
-      toast({ title: "Success", description: "Service upated successfully", })
+      toast({ title: "Success", description: "Service updated successfully", })
+      setLoading(false)
     } catch (error) {
       console.error("Error updating service:", error);
+      toast({ title: "error", description: "Service update failed", })
+      setLoading(false)
     }
   };
 
@@ -181,7 +195,7 @@ export default function AdminServices() {
                       <Pencil className="mr-2 h-4 w-4" /> Edit
                     </Button>
                     <Button variant="destructive" size="sm" onClick={() => handleDelete(service._id)}>
-                      <Trash className="mr-2 h-4 w-4" /> Delete
+                      <Trash className="mr-2 h-4 w-4" /> {deleting === service._id  ? "Deleting..." : "Delete"}
                     </Button>
                   </div>
                 </TableCell>
@@ -215,7 +229,7 @@ export default function AdminServices() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleAddService}>Add Service</Button>
+            <Button onClick={handleAddService}>{loading ? "Adding Service...": "Add Service"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -259,7 +273,7 @@ export default function AdminServices() {
           </div>
 
           <DialogFooter>
-            <Button onClick={handleEditService}>Update Service</Button>
+            <Button onClick={handleEditService}>{loading ? "Updating...." : "Update Service"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

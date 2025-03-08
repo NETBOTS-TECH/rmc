@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import ChatBot from "@/components/chat-bot";
 
 const API_URL = `${process.env.BASE_URL}/api/gallery`; // Change if hosted
 
@@ -53,6 +54,7 @@ const Gallery = () => {
           <p className="text-gray-500 text-center col-span-full">No images available.</p>
         )}
       </div>
+      <ChatBot />
     </div>
   );
 };

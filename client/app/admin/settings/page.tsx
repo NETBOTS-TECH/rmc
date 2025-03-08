@@ -36,6 +36,8 @@ export default function Settings() {
   const [newUser, setNewUser] = useState({ name: "", email: "", password: "", userType: "user" });
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newPassword, setNewPassword] = useState("");
+  const [isLoading,setIsLoading]=useState(false);
+  const [id,setId]=useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -60,12 +62,16 @@ export default function Settings() {
   };
 
   const handleDelete = async (id: string) => {
+    setId(id);
     try {
       await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       setUsers(users.filter((user) => user._id !== id));
       toast({ title: "Success", description: "User deleted successfully", })
+      setId("")
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast({ title: "Success", description: "User deletion failed", })
+      setId("")
     }
   };
 
@@ -86,6 +92,7 @@ export default function Settings() {
   };
 
   const handleUpdatePassword = async () => {
+    setIsLoading(true);
     if (!selectedUser) return;
     try {
       await fetch(`${UPDATE_PASSWORD_URL}/${selectedUser._id}`, {
@@ -96,12 +103,16 @@ export default function Settings() {
       setPasswordDialogOpen(false);
       setNewPassword("");
       toast({ title: "Success", description: "password updated successfully", })
+      setIsLoading(false);
     } catch (error) {
       console.error("Error updating password:", error);
+      toast({ title: "error", description: "error in update", })
+      setIsLoading(false);
     }
   };
 
   const handleRegisterUser = async () => {
+    setIsLoading(true)
     try {
       await fetch(REGISTER_URL, {
         method: "POST",
@@ -112,8 +123,11 @@ export default function Settings() {
       setOpen(false);
       setNewUser({ name: "", email: "", password: "", userType: "user" });
       toast({ title: "Success", description: "User created successfully", })
+      setIsLoading(false)
     } catch (error) {
       console.error("Error registering user:", error);
+      toast({ title: "error", description: "User creation failed", })
+      setIsLoading(false)
     }
   };
 
@@ -156,7 +170,7 @@ export default function Settings() {
       Update Password
     </Button>
     <Button variant="destructive" onClick={() => handleDelete(user._id)}>
-      <Trash /> Delete
+     {user._id === id ? "deleting..." : <><Trash /> Delete</> }
     </Button>
   </div>
 </TableCell>
@@ -176,7 +190,7 @@ export default function Settings() {
             <option value="user">User</option>
             <option value="admin">Admin</option>
           </select>
-          <Button onClick={handleRegisterUser}>Create User</Button>
+          <Button onClick={handleRegisterUser}>{isLoading ? "Creating..." : "Create User"}</Button>
         </DialogContent>
       </Dialog>
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
@@ -185,7 +199,7 @@ export default function Settings() {
         
           <Input placeholder="Password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
          
-          <Button onClick={handleUpdatePassword}>Update Password</Button>
+          <Button onClick={handleUpdatePassword}>{isLoading ? "Updating...." : "Update Password"}</Button>
         </DialogContent>
       </Dialog>
       <div className="mt-4 flex justify-center gap-2">

@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, ArrowRight } from "l
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 export default function Footer() {
   const [services, setServices] = useState([]);
@@ -78,12 +78,12 @@ export default function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="https://discord.com/"
+                href="https://www.linkedin.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-gray-800 hover:bg-primary transition-colors p-2 rounded-full"
               >
-                 <FontAwesomeIcon icon={faDiscord} size="1x" className="text-light" />
+                 <FontAwesomeIcon icon={faLinkedin} size="1x" className="text-light" />
               </a>
             </div>
           </div>
@@ -126,6 +126,12 @@ export default function Footer() {
                 <Link href="/contact" className="text-gray-300 hover:text-primary transition-colors flex items-center">
                   <ArrowRight className="h-4 w-4 mr-2" />
                   Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-gray-300 hover:text-primary transition-colors flex items-center">
+                  <ArrowRight className="h-4 w-4 mr-2" />
+                  Blog
                 </Link>
               </li>
               <li>
