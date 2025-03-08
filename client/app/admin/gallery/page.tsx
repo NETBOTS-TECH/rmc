@@ -117,7 +117,7 @@ export default function Gallery() {
 ))}
       </div>
 
-     <p className="text-gray-500 text-center mt-4">No images uploaded.</p>
+      {images.length === 0 && <p className="text-gray-500 text-center mt-4">No images uploaded.</p>}
     </div>
   );
 }
