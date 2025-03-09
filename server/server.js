@@ -13,19 +13,20 @@ const allowedOrigins = [
   "http://82.29.179.48:3000"
 ];
 const corsOptions = {
-  origin: '*',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, origin);  // Allow only defined origins
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
-  optionSuccessStatus: 200
-}
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
 
+// ✅ Use only one CORS setup
 app.use(cors(corsOptions));
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Headers', true);
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  next();
-});
 app.use(express.json());
 
 app.use("/uploads", express.static("uploads"));
