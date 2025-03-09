@@ -13,7 +13,7 @@ const allowedOrigins = [
   "http://82.29.179.48:3000"
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, origin);
@@ -24,10 +24,10 @@ app.use(cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
-}));
+};
 
-// Ensure proper CORS headers for preflight requests
-app.options("*", cors());
+// Apply CORS for all routes
+app.use(cors(corsOptions));
 
 
 app.use(express.json());
