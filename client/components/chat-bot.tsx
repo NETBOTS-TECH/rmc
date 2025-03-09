@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input"
 import { chatbotData } from "@/data/chatbot-data"
 import { useToast } from "@/components/ui/use-toast"
 import { io } from "socket.io-client"
-const messageSoundURL = "https://www.fesliyanstudios.com/play-mp3/4315";
-const typingSoundURL = "https://www.fesliyanstudios.com/play-mp3/2763"; // Example typing sound
+const messageSoundURL = "/sound/iphone_tone.mp3"; 
+const typingSoundURL = "/sound/typing.mp3"; // Example typing sound
 import axios from "axios"
 import { usePathname } from "next/navigation"
 // Define message types
