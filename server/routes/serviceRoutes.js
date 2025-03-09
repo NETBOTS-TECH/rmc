@@ -9,7 +9,28 @@ const {
 } = require("../controllers/serviceController");
 
 const router = express.Router();
+const allowedOrigins = [
+  "https://repairmyconcrete.com",
+  "http://localhost:3000",  // For local development
+  "http://82.29.179.48:3000"
+];
 
+router.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin); // Set specific origin
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 // ✅ Create a new service (with image upload)
 router.post("/", upload.single("image"), createService);
 
