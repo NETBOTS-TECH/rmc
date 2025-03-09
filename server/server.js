@@ -1,32 +1,33 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors");
 const connectDB = require("./config/db");
 
 dotenv.config();
 connectDB();
 
 const app = express();
-const allowedOrigins = [
-  "https://repairmyconcrete.com",
-  "http://localhost:3000",  // For local development
-  "http://82.29.179.48:3000"
-];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin);  // Allow only defined origins
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "https://repairmyconcrete.com",
+    "http://localhost:3000",  // For local development
+    "http://82.29.179.48:3000"
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
 
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-// ✅ Use only one CORS setup
-app.use(cors(corsOptions));
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 app.use(express.json());
 
 app.use("/uploads", express.static("uploads"));
