@@ -7,26 +7,26 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const allowedOrigins = [
-  "https://repairmyconcrete.com",
-  // "http://localhost:3000",  // For local development
-  // "http://82.29.179.48:3000"
-];
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Authorization", "Content-Type"]
-}));
+// const allowedOrigins = [
+//   "https://repairmyconcrete.com",
+//   "http://localhost:3000",  // For local development
+//   "http://82.29.179.48:3000"
+// ];
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, origin);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Authorization", "Content-Type"]
+// }));
 
-// ✅ Handle preflight requests properly
-app.options("*", cors());
+// // ✅ Handle preflight requests properly
+// app.options("*", cors());
 app.use(express.json());
 
 app.use("/uploads", express.static("uploads"));
