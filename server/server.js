@@ -28,10 +28,16 @@ const corsOptions = {
 
 // Apply CORS for all routes
 app.use(cors(corsOptions));
-
+app.options("/api/services", cors(corsOptions));
+app.options("/api/estimates", cors(corsOptions));
+app.options("/api/contacts", cors(corsOptions));
+app.options("/api/gallery", cors(corsOptions));
+app.options("/api/chat-user", cors(corsOptions));
+app.options("/api/blogs", cors(corsOptions));
+app.options("/auth", cors(corsOptions));
 
 app.use(express.json());
-app.options("/api/services", cors(corsOptions));
+
 app.use("/uploads", express.static("uploads"));
 
 app.use("/auth", require("./routes/authRoutes"));
