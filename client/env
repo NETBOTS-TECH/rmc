@@ -1,0 +1,5 @@
+BASE_URL=http://localhost:3000
+PORT=5000
+MONGO_URI=mongodb+srv://admin1:admin2@cluster0.ru3opcr.mongodb.net/RMC
+JWT_SECRET=secret786
+SERVER_URL=http://localhost:5000
