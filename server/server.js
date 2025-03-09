@@ -9,8 +9,8 @@ connectDB();
 const app = express();
 const allowedOrigins = [
   "https://repairmyconcrete.com",
-  "http://localhost:3000",  // For local development
-  "http://82.29.179.48:3000"
+  // "http://localhost:3000",  // For local development
+  // "http://82.29.179.48:3000"
 ];
 app.use(cors({
   origin: function (origin, callback) {
