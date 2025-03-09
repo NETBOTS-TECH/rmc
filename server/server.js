@@ -7,11 +7,24 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const allowedOrigins = [
+  "https://repairmyconcrete.com",
+  "http://localhost:3000",   // Local development
+  "http://82.29.179.48:3000"
+];
+
 app.use(cors({
-  origin: "*", // Allow all origins (not recommended for production)
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
