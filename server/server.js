@@ -12,21 +12,20 @@ const allowedOrigins = [
   "http://localhost:3000",  // For local development
   "http://82.29.179.48:3000"
 ];
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+const corsOptions = {
+  origin: '*',
   credentials: true,
-  methods: [ "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Authorization", "Content-Type"]
-}));
+  optionSuccessStatus: 200
+}
 
-// ✅ Handle preflight requests properly
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Headers', true);
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  next();
+});
 app.use(express.json());
 
 app.use("/uploads", express.static("uploads"));
