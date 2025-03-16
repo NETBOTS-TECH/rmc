@@ -12,11 +12,10 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://repairmyconcrete.com",  // ✅ Match the allowed origin
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  },
+    credentials: true
+},
 });
 
 // Middleware
