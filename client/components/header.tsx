@@ -226,7 +226,7 @@ export default function Header() {
       <div>
         <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Partnered Industries</h3>
         {commercialServices
-          .filter((service: any) => service.subheading === "PARTNERD INDUSTRIES")
+          .filter((service: any) => service.subheading === "PARTNERED INDUSTRIES")
           .map((service: any) => (
             <DropdownMenuItem key={service._id} asChild>
               <Link 
@@ -243,7 +243,7 @@ export default function Header() {
       <div>
         <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Premier Partner</h3>
         {commercialServices
-          .filter((service: any) => service.subheading === "Premier Partner")
+          .filter((service: any) => service.subheading === "PREMIER PARTNER")
           .map((service: any) => (
             <DropdownMenuItem key={service._id} asChild>
               <Link 
