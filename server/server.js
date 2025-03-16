@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const connectDB = require("./config/db");
@@ -10,17 +9,9 @@ connectDB();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://repairmyconcrete.com/",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  },
-});
+const io = new Server(server); // ❌ Removed CORS config here
 
 // Middleware
-// app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
@@ -106,9 +97,9 @@ io.on("connection", (socket) => {
       }
     }
   });
+
   // ✅ Handle Agent Messages (Agent → Client)
   socket.on("agent-message", ({ agentId, message }) => {
-    // Find the client associated with this agent
     const clientId = Object.keys(clientAgentPairs).find(
       (cId) => clientAgentPairs[cId] === agentId
     );
@@ -122,6 +113,7 @@ io.on("connection", (socket) => {
       }
     }
   });
+
   // ✅ Handle Disconnection
   socket.on("disconnect", () => {
     if (agents[socket.id]) {
