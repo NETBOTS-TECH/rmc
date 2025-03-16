@@ -76,7 +76,7 @@ export default function ServicesPage() {
                   <div className="p-6">
                     <h3 className="text-xl font-bold mb-3">{service.name}</h3>
                     <p className="text-gray-600 mb-4">
-  {service.description.length > 60 ? service.description.substring(0, 60) + "..." : service.description}
+  {service.description.length > 60000 ? service.description.substring(0, 60) + "..." : service.description}
 </p>
 
                     <Button asChild>
@@ -104,7 +104,7 @@ export default function ServicesPage() {
                   <div className="p-6">
                     <h3 className="text-xl font-bold mb-3">{service.name}</h3>
                     <p className="text-gray-600 mb-4">
-  {service.description.length > 60 ? service.description.substring(0, 60) + "..." : service.description}
+  {service.description}
 </p>
 
                     <Button asChild>

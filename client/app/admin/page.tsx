@@ -155,29 +155,47 @@ const [nContact, setNContact] =  useState<Contact[]>([]);
         </Card>
       </div>
 
-      {/* Modal for Viewing Details */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{selectedItem ? (selectedItem as Contact).email ? "Contact Details" : "Estimate Details" : ""}</DialogTitle>
-          </DialogHeader>
-          {selectedItem && (
-            <div className="space-y-2">
-            {Object.entries(selectedItem)
-  .filter(([key]) => !["_id", "__v", "createdAt", "updatedAt", "images","status"].includes(key)) // Exclude unwanted fields
-  .map(([key, value]) => (
-    <p key={key}>
-      <strong>{key}:</strong>{" "}
-      {key === "services" && typeof value === "object"
-        ? Object.values(value).join(", ")  // Format services correctly
-        : value}
-    </p>
-  ))}
-
+   {/* Modal for Viewing Details */}
+<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+  <DialogContent className="overflow-y-auto max-h-[80vh]">
+    <DialogHeader>
+      <DialogTitle>
+        {selectedItem ? (selectedItem as Contact).email ? "Contact Details" : "Estimate Details" : ""}
+      </DialogTitle>
+    </DialogHeader>
+    {selectedItem && (
+      <div className="space-y-2">
+        {Object.entries(selectedItem)
+          .filter(([key]) => !["_id", "__v", "createdAt", "updatedAt", "status"].includes(key)) // Exclude unwanted fields
+          .map(([key, value]) => (
+            <div key={key}>
+              {key === "images" && Array.isArray(value) ? ( // Check if images exist
+                <div className="grid grid-cols-1s gap-4 ">
+                  {value.map((image: string, idx: number) => (
+                    <img
+                      key={idx}
+                      src={process.env.BASE_URL+"/"+image}
+                      alt={`Estimate Image ${idx + 1}`}
+                      className="w-full h-full rounded-lg shadow-md"
+                    />
+                  ))}
+                </div>
+              ) : key === "services" && typeof value === "object" ? (
+                <p>
+                  <strong>{key}:</strong> {Object.values(value).join(", ")}
+                </p>
+              ) : (
+                <p>
+                  <strong>{key}:</strong> {value}
+                </p>
+              )}
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          ))}
+      </div>
+    )}
+  </DialogContent>
+</Dialog>
+
     </div>
   );
 }

@@ -5,11 +5,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Eye, Search } from "lucide-react"
+import { Download, Eye, Search } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "@/components/ui/use-toast"
 import Image from "next/image"
-
+import jsPDF from "jspdf"
+import "jspdf-autotable"
 // Define TypeScript Interface
 interface Estimate {
   _id: string
@@ -90,7 +91,60 @@ export default function AdminEstimates() {
     }
   }
   
+  const generatePDF = async (estimate: Estimate) => {
+    const { jsPDF } = await import("jspdf");
+  const autoTable = (await import("jspdf-autotable")).default; // ✅ Ensure correct import
+      const doc = new jsPDF();
+  
+      // RMC Branding and Header
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.text("RMC Official Estimate", 105, 20, { align: "center" });
+  
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Date: ${new Date(estimate.createdAt).toLocaleDateString()}`, 14, 30);
+  
+      // Customer Information Section
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Customer Details", 14, 40);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Name: ${estimate.firstName} ${estimate.lastName}`, 14, 48);
+      doc.text(`Email: ${estimate.email}`, 14, 56);
+      doc.text(`Phone: ${estimate.phone}`, 14, 64);
+      doc.text(`Address: ${estimate.street1}, ${estimate.city}, ${estimate.state} ${estimate.zipCode}`, 14, 72);
+  
+      // Service Details Table
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Service Details", 14, 85);
+      autoTable(doc,{
+        startY: 90,
+        head: [["Service Name", "Property Type", "Schedule", "Status"]],
+        body: [
+          [
+            Object.values(estimate.services).join(", "),
+            estimate.propertyType,
+            estimate.schedulePreference,
+            estimate.status.charAt(0).toUpperCase() + estimate.status.slice(1),
+          ],
+        ],
+        theme: "grid",
+        styles: { fontSize: 11 },
+        headStyles: { fillColor: [41, 128, 185] }, // Blue header
+      });
+  
+      // Footer
+      doc.setFontSize(10);
+      doc.text("This estimate is provided by RMC. All rights reserved.", 14, doc.internal.pageSize.height - 10);
+  
+      // Download the PDF
+      doc.save(`Estimate_${estimate._id}.pdf`);
 
+  };
+  
   // Filter estimates based on search term
   const filteredEstimates = estimates.filter(
     (estimate) =>
@@ -172,6 +226,9 @@ export default function AdminEstimates() {
                         <DialogTitle>Estimate Details</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-2">
+                      <Button variant="default" className="mt-4 flex items-center float-right" onClick={() => generatePDF(selectedEstimate)}>
+                          <Download className="mr-2 h-4 w-4" /> Download PDF
+                        </Button>
                         <p><strong>Name:</strong> {selectedEstimate.firstName} {selectedEstimate.lastName}</p>
                         <p><strong>Email:</strong> {selectedEstimate.email}</p>
                         <p><strong>Phone:</strong> {selectedEstimate.phone}</p>

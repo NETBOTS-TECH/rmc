@@ -55,10 +55,7 @@ export default function Header() {
       <div className="bg-gray-900 text-white py-2 hidden md:block">
         <div className="container mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <a href="tel:720-555-1234" className="flex items-center text-sm hover:text-primary transition-colors">
-              <Phone className="h-4 w-4 mr-1" />
-              <span>720-555-1234</span>
-            </a>
+           
             <a href="mailto:info@repairmyconcrete.com" className="flex items-center text-sm hover:text-primary transition-colors">
               <Mail className="h-4 w-4 mr-1" />
               <span>info@repairmyconcrete.com</span>
@@ -79,14 +76,14 @@ export default function Header() {
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white shadow-md py-2" : "bg-white py-4"}`}>
+      <header className={`sticky top-0 left-0 right-0 z-50 pt-6 pb-6 transition-all duration-300 ${isScrolled ? "bg-white shadow-md py-2" : "bg-white py-4"}`}>
         <div className="container mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-primary">
             Repair my Concrete
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-6">
             {menuData.mainMenu.slice(0,2).map((item:any) => (
               <div key={item.id} className="relative group">
                 {item.hasDropdown ? (
@@ -116,57 +113,156 @@ export default function Header() {
             ))}
 
   {/* Residential Services Dropdown */}
-<DropdownMenu>
+  <DropdownMenu>
   <DropdownMenuTrigger asChild>
     <button className="flex items-center text-gray-700 hover:text-primary font-medium transition-colors duration-200">
       Residential Services
       <ChevronDown className="ml-1 h-4 w-4" />
     </button>
   </DropdownMenuTrigger>
-  <DropdownMenuContent align="start" className="p-4 w-[650px]"> {/* Wider dropdown for full text visibility */}
-    <div className="grid grid-cols-3 gap-2">
-      {residentialServices.map((service: any) => (
-        <DropdownMenuItem key={service._id} asChild>
-          <Link 
-            href={`/description?id=${service._id}`} 
-            className="block text-center px-3 py-2 rounded hover:bg-gray-200"
-            style={{ whiteSpace: "normal", overflow: "visible", textAlign: "left" }} // Ensures full text is visible
-          >
-            {service.name}
-          </Link>
-        </DropdownMenuItem>
-      ))}
+  <DropdownMenuContent align="start" className="p-4 w-[800px]"> {/* Wider dropdown for 4 columns */}
+    <div className="grid grid-cols-4 gap-4"> {/* 4 columns layout */}
+      {/* Concrete Repair */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Concrete Repair</h3>
+        {residentialServices
+          .filter((service: any) => service.subheading === "CONCRETE REPAIR")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-1 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
+
+      {/* Foundation Repair */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Foundation Repair</h3>
+        {residentialServices
+          .filter((service: any) => service.subheading === "FOUNDATION REPAIR")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-1 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
+
+      {/* New Concrete */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">New Concrete</h3>
+        {residentialServices
+          .filter((service: any) => service.subheading === "NEW CONCRETE")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-1 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
+
+      {/* Waterproofing */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Waterproofing</h3>
+        {residentialServices
+          .filter((service: any) => service.subheading === "WATERPROOFING")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-1 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
     </div>
   </DropdownMenuContent>
 </DropdownMenu>
+
 
 {/* Commercial Services Dropdown */}
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <button className="flex items-center text-gray-700 hover:text-primary font-medium transition-colors duration-200">
+    <button className="flex items-center text-gray-700 hover:text-primary font-medium transition-colors duration-200 ">
       Commercial Services
       <ChevronDown className="ml-1 h-4 w-4" />
     </button>
   </DropdownMenuTrigger>
-  <DropdownMenuContent align="start" className="p-4 w-[750px]">
-    <div className="grid grid-cols-3 gap-1">
-      {commercialServices.map((service: any) => (
-        <DropdownMenuItem key={service._id} asChild>
-          <Link 
-            href={`/description?id=${service._id}`} 
-            className="block text-center px-3 py-2 rounded hover:bg-gray-200"
-            style={{ whiteSpace: "normal", overflow: "visible", textAlign: "left" }}
-          >
-            {service.name}
-          </Link>
-        </DropdownMenuItem>
-      ))}
+  <DropdownMenuContent align="start" className="p-4 w-[800px]"> {/* Adjusted width for 3 columns */}
+    <div className="grid grid-cols-3 gap-4">
+      
+      {/* Column 1 - Commercial Services */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Commercial Services</h3>
+        {commercialServices
+          .filter((service: any) => service.subheading === "COMMERCIAL SERVICES")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-2 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
+
+      {/* Column 2 - Partnered Industries */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Partnered Industries</h3>
+        {commercialServices
+          .filter((service: any) => service.subheading === "PARTNERD INDUSTRIES")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-2 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
+
+      {/* Column 3 - Premier Partner */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-800 mb-2 pb-2 border-b">Premier Partner</h3>
+        {commercialServices
+          .filter((service: any) => service.subheading === "Premier Partner")
+          .map((service: any) => (
+            <DropdownMenuItem key={service._id} asChild>
+              <Link 
+                href={`/description?id=${service._id}`} 
+                className="block text-left px-3 py-2 rounded hover:bg-gray-200 border-b-[0.2px]"
+              >
+                {service.name}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+      </div>
+
     </div>
   </DropdownMenuContent>
 </DropdownMenu>
 
 
-            {menuData.mainMenu.slice(3).map((item:any) => (
+
+            {menuData.mainMenu.slice(2).map((item:any) => (
               <div key={item.id} className="relative group">
                 {item.hasDropdown ? (
                   <DropdownMenu>
@@ -197,7 +293,10 @@ export default function Header() {
 
           <div className="hidden lg:flex items-center space-x-4">
             <Button asChild className="btn-hover transition-all duration-300 hover:shadow-lg">
-              <Link href="/estimate">Get Free Estimate</Link>
+            <a href="tel:720-555-1234" className="flex items-center text-sm hover:text-primary transition-colors">
+              <Phone className="h-4 w-4 mr-1" />
+              <span>720-555-1234</span>
+            </a>
             </Button>
           </div>
 

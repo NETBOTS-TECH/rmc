@@ -26,7 +26,7 @@ export default function ServicesSection() {
         const response = await fetch(API_URL)
         if (!response.ok) throw new Error("Failed to fetch services")
         const data: Service[] = await response.json()
-        setServices(data.slice(0, 6)) // Only show 6 services
+        setServices(data.slice(2, 6)) // Only show 6 services
       } catch (err) {
         setError("Error fetching services")
       } finally {
@@ -54,7 +54,7 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {services.map((service:any) => (
             <div key={service._id} className="bg-white rounded-lg shadow-md overflow-hidden service-card">
               <img
@@ -65,7 +65,7 @@ export default function ServicesSection() {
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-3">{service.name}</h3>
                 <p className="text-gray-600 mb-4">
-  {service.description.length > 60 ? service.description.substring(0, 60) + "..." : service.description}
+  {service.description.length > 10000 ? service.description.substring(0, 60) + "..." : service.description}
 </p>
 
                 <Link

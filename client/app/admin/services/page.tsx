@@ -15,6 +15,7 @@ const API_URL = `${process.env.BASE_URL}/api/services/`; // Change if hosted els
 interface Service {
   _id: string;
   name: string;
+  subheading: string;
   description: string;
   image: string;
   category: "residential" | "commercial";
@@ -29,11 +30,13 @@ export default function AdminServices() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [currentPage, setCurrentPage] = useState(1)
   const [loading,setLoading]= useState(false);
+  const subheadingOptions = ["CONCRETE REPAIR","FOUNDATION REPAIR","NEW CONCRETE","WATERPROOFING", "COMMERCIAL SERVICES", "PARTNERED INDUSTRIES", "PREMIER PARTNER"];
   const [deleting,setDeleting]= useState("");
   const itemsPerPage = 10
   
   const [newService, setNewService] = useState({
     name: "",
+    subheading : "",
     description: "",
     image: null as File | null,
     category: "residential",
@@ -80,7 +83,7 @@ export default function AdminServices() {
     formData.append("description", newService.description);
     formData.append("image", newService.image);
     formData.append("category", newService.category);
-
+    formData.append("subheading", newService.subheading);
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -90,7 +93,7 @@ export default function AdminServices() {
       setServices([addedService, ...services]);
 
       setIsAddModalOpen(false);
-      setNewService({ name: "", description: "", image: null, category: "residential" });
+      setNewService({ name: "", description: "", image: null, category: "residential", subheading: "" });
       toast({ title: "Success", description: "Service added successfully" })
       setLoading(false)
     } catch (error) {
@@ -102,7 +105,7 @@ export default function AdminServices() {
 
   const handleEditService = async () => {
     if (!editingService) return;
-    if (!editingService.name || !editingService.description) {
+    if (!editingService.name || !editingService.description || !editingService.subheading) {
       alert("Please fill in all fields.");
       return;
     }
@@ -111,7 +114,7 @@ export default function AdminServices() {
     formData.append("name", editingService.name);
     formData.append("description", editingService.description);
     formData.append("category", editingService.category);
-
+    formData.append("subheading", editingService.subheading);
     if (selectedImage) {
       formData.append("image", selectedImage);
     }
@@ -157,6 +160,7 @@ export default function AdminServices() {
           <TableRow>
           <TableHead>S.no</TableHead>
             <TableHead>Name</TableHead>
+            <TableHead>Subheading</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Actions</TableHead>
@@ -169,6 +173,7 @@ export default function AdminServices() {
               <TableRow key={service._id}>
                 <TableCell>{index+1}</TableCell>
                 <TableCell>{service.name}</TableCell>
+                <TableCell>{service.subheading ?service.subheading : "N/A" }</TableCell>
                 <TableCell style={{
   width: "300px",
   overflow: "hidden",
@@ -214,6 +219,22 @@ export default function AdminServices() {
           <div className="space-y-4">
             <Input placeholder="Service Name" value={newService.name} onChange={(e) => setNewService({ ...newService, name: e.target.value })} />
             <Textarea placeholder="Service Description" value={newService.description} onChange={(e) => setNewService({ ...newService, description: e.target.value })} />
+            <Select
+  value={newService.subheading}
+  onValueChange={(value) => setNewService({ ...newService, subheading: value })}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select Service Subheading" />
+  </SelectTrigger>
+  <SelectContent>
+    {subheadingOptions.map((option) => (
+      <SelectItem key={option} value={option}>
+        {option}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+            
             <Input type="file" accept="image/*" onChange={(e) => setNewService({ ...newService, image: e.target.files?.[0] || null })} />
 
             <Select value={newService.category} onValueChange={(value) => setNewService({ ...newService, category: value as "residential" | "commercial" })}>
@@ -248,7 +269,23 @@ export default function AdminServices() {
               value={editingService?.description || ""}
               onChange={(e) => setEditingService((prev) => prev ? { ...prev, description: e.target.value } : null)}
             />
-
+<Select
+  value={editingService?.subheading || ""}
+  onValueChange={(value) =>
+    setEditingService((prev) => (prev ? { ...prev, subheading: value } : null))
+  }
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select Service Subheading" />
+  </SelectTrigger>
+  <SelectContent>
+    {subheadingOptions.map((option) => (
+      <SelectItem key={option} value={option}>
+        {option}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
             {/* Existing Image Preview */}
             {editingService?.image && !selectedImage && (
               <Image src={editingService.image} alt="Current Service" width={100} height={100} className="w-full h-[300px] rounded-md" />

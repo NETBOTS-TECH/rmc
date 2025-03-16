@@ -5,11 +5,11 @@ const BASE_URL = process.env.SERVER_URL; // Change this if hosted elsewhere
 
 // Create Service
 exports.createService = async (req, res) => {
-  const { name, description, category } = req.body;
+  const { name,subheading, description, category } = req.body;
   const image = req.file ? `${BASE_URL}/uploads/${req.file.filename}` : null; // Save image URL
 console.log(image)
   try {
-    const service = new Service({ name, description, image, category });
+    const service = new Service({ name,subheading ,description, image, category });
     await service.save();
     res.status(201).json(service);
   } catch (error) {
@@ -52,13 +52,13 @@ exports.getServiceById = async (req, res) => {
 // Update Service
 exports.updateService = async (req, res) => {
   const { id } = req.params;
-  const { name, description, category } = req.body;
+  const { name, description, category, subheading } = req.body;
   const image = req.file ? `${BASE_URL}/uploads/${req.file.filename}` : undefined;
 
   try {
     const updatedService = await Service.findByIdAndUpdate(
       id,
-      { name, description, category, ...(image && { image }) },
+      { name, description, category,subheading, ...(image && { image }) },
       { new: true }
     );
     res.json(updatedService);

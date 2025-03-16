@@ -68,60 +68,51 @@ const pathname = usePathname();
   };
   useEffect(() => {
     // Initialize socket connection
-    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || process.env.BASE_URL)
-    setSocket(socketInstance)
-
-    // Initialize audio
-    // messageSoundRef.current = new Audio("https://www.fesliyanstudios.com/play-mp3/4380")
-
-    // Show chatbot after 3 seconds
+    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || process.env.BASE_URL);
+    setSocket(socketInstance);
     const timer = setTimeout(() => {
-      if(pathname === "/")
-      {
-      setIsOpen(true)
+      if (pathname === "/") {
+        setIsOpen(true);
       }
-    }, 3000)
-
+    }, 3000);
+  
     // Initial greeting and suggested questions
-    const initialQuestions = chatbotData.slice(0, 3).map((item) => item.question)
-    setSuggestedQuestions(initialQuestions)
-
-    // Socket event listeners
-    socketInstance.on("agent-message", (message: string) => {
+    const initialQuestions = chatbotData.slice(0, 3).map((item) => item.question);
+    setSuggestedQuestions(initialQuestions);
+    // Define event handlers
+    const handleAgentMessage = (message:any) => {
       addMessage({
         id: Date.now().toString(),
         type: "agent",
         text: message,
-      })
-      playMessageSound()
-    })
-
-    socketInstance.on("agent-connected", () => {
-      setAgentConnected(true)
+      });
+      playMessageSound();
+    };
+  
+    const handleAgentConnected = () => {
+      setAgentConnected(true);
       addMessage({
         id: Date.now().toString(),
         type: "agent",
         text: "Live agent connected. How can I help you today?",
-      })
-      playMessageSound()
-    })
-
-    socketInstance.on("agent-disconnected", () => {
-      setAgentConnected(false)
-      addMessage({
-        id: Date.now().toString(),
-        type: "bot",
-        text: "The live agent has disconnected. You can continue chatting with our bot or request another live agent.",
-      })
-      setLiveAgentRequested(false)
-      playMessageSound()
-    })
-
+      });
+      playMessageSound();
+    };
+  
+    // Attach event listeners
+    socketInstance.on("agent-message", handleAgentMessage);
+    socketInstance.on("agent-connected", handleAgentConnected);
+    // socketInstance.on("agent-disconnected", handleAgentDisconnected);
+  
     return () => {
-      clearTimeout(timer)
-      socketInstance.disconnect()
-    }
-  }, [])
+      clearTimeout(timer);
+      socketInstance.off("agent-message", handleAgentMessage);
+      socketInstance.off("agent-connected", handleAgentConnected);
+      // socketInstance.off("agent-disconnected", handleAgentDisconnected);
+      socketInstance.disconnect();
+    };
+  }, []);
+  
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -263,13 +254,13 @@ const pathname = usePathname();
         id: Date.now().toString(),
         type: "user",
         text: inputValue,
-      })
-
+      });
+  
       // Emit message to server
       socket.emit("client-message", {
         message: inputValue,
         userId: socket.id,
-      })
+      });
     } else {
       // Regular chatbot interaction
       addMessage({
@@ -324,18 +315,21 @@ const pathname = usePathname();
   }
 
   const handleLiveAgentRequest = () => {
-    // if (liveAgentRequested) {
-    //   simulateTyping("We're already trying to connect you with a live agent. Please wait a moment.")
-    //   return
-    // }
-
-    // setLiveAgentRequested(true)
-    // simulateTyping("I'm connecting you with a live agent. This may take a moment...")
-    simulateTyping("Our agents are busy now.Will contact you when they are free...")
-    // Emit request to server
-    // socket.emit("request-agent", { userId: socket.id })
-  }
-
+    if (liveAgentRequested) {
+      simulateTyping("We're already trying to connect you with a live agent. Please wait a moment.");
+      return;
+    }
+    
+    const clientId = `User-${Math.floor(Math.random() * 1000)}`;
+    socket.emit("register-client", clientId);
+    setLiveAgentRequested(true);
+    if(!clientId)
+    {
+    simulateTyping("I'm connecting you with a live agent. This may take a moment...");
+    }
+    // Request a live agent
+    socket.emit("request-live-agent", { userId: socket.id });
+  };
   const handleClose = () => {
     setIsOpen(false)
 
@@ -349,7 +343,7 @@ const pathname = usePathname();
     try {
       await axios.post(`${process.env.BASE_URL}/api/chat-user`, userInfo)
       simulateTyping(
-        "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs. and will also send you a mail"
+        "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs and will also send you an email."
       )
       // toast({
       //   title: "Contact Request Submitted",
@@ -465,7 +459,8 @@ const pathname = usePathname();
                 {/* Suggested follow-up questions */}
                 {!isTyping &&
                   !collectingUserInfo &&
-                  !agentConnected &&
+                  !agentConnected && 
+         
                   messages.length > 0 &&
                   messages[messages.length - 1].type === "bot" && (
                     <div className="space-y-2 mt-4">

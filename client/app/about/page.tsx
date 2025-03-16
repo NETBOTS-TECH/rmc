@@ -124,7 +124,7 @@ export default function AboutPage() {
         </div>
 
         {/* Our Team */}
-        <div className="mb-20">
+        {/* <div className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Meet Our Team</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
@@ -151,7 +151,7 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Why Choose Us */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
@@ -234,30 +234,7 @@ export default function AboutPage() {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-primary text-white rounded-lg p-8 md:p-12 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Fix Your Concrete Problems?</h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Contact us today for a free estimate on your concrete repair or foundation project.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button
-              size="lg"
-              variant="secondary"
-              asChild
-              className="btn-hover transition-all duration-300 hover:shadow-lg"
-            >
-              <Link href="/estimate">Get Free Estimate</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="btn-hover  transition-all duration-300 hover:shadow-lg"
-              asChild
-            >
-              <Link href="/contact">Contact Us</Link>
-            </Button>
-          </div>
-        </div>
+  
       </div>
       <ChatBot />
     </div>

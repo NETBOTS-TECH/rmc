@@ -15,7 +15,8 @@ import {
   X,
   Hammer,
   Image,
-  MessageCircleMoreIcon
+  MessageCircleMoreIcon,
+  User2Icon
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -48,6 +49,7 @@ export default function AdminLayout({
     { icon: <MessageCircleMoreIcon className="h-5 w-5" />, label: "blogs", href: "/admin/blog" },
     { icon: <MessageSquare className="h-5 w-5" />, label: "Live Chat", href: "/admin/chat" },
     { icon: <Image className="h-5 w-5" />, label: "Gallery", href: "/admin/gallery" },
+    { icon: <User2Icon className="h-5 w-5" />, label: "Testimonials", href: "/admin/testimonials" },
     { icon: <Settings className="h-5 w-5" />, label: "Settings", href: "/admin/settings" },
 
   ]

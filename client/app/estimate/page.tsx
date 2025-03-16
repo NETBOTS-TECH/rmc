@@ -6,6 +6,8 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
@@ -38,6 +40,8 @@ export default function EstimatePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [services,setServices] = useState([])
+  const [otherService, setOtherService] = useState("");
+  const [isOtherChecked, setIsOtherChecked] = useState(false);
   const { toast } = useToast()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,6 +51,53 @@ export default function EstimatePage() {
       [name]: value,
     }))
   }
+  const handleDownload = (e:any) => {
+    e.preventDefault();
+    const doc:any = new jsPDF();
+
+    // Add Company Logo (Optional)
+    // doc.addImage("https://your-logo-url.com/logo.png", "PNG", 10, 10, 40, 20);
+
+    // Title Styling
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(40, 40, 40);
+    doc.text("Repair My Concrete - Estimate", 60, 25);
+
+    // Document Details
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "italic");
+    doc.text("Prepared for: Valued Customer", 14, 35);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 35);
+
+    // Service Data
+    const services = [
+      { name: "Commercial Sidewalk Leveling", price: "$1,200 - $2,500" },
+      { name: "Commercial Basement Floor Leveling", price: "$2,000 - $4,500" },
+      { name: "Commercial Porch & Patio Leveling", price: "$1,500 - $3,200" },
+      { name: "Commercial Driveway Concrete Leveling", price: "$1,800 - $4,000" },
+    ];
+
+    // Generate Table
+    autoTable(doc, {
+      startY: 45,
+      head: [["Service", "Estimated Price"]],
+      body: services.map((service) => [service.name, service.price]),
+      styles: { fontSize: 12, cellPadding: 5 },
+      headStyles: { fillColor: [52, 152, 219], textColor: 255 },
+      alternateRowStyles: { fillColor: [240, 240, 240] },
+    });
+
+    // Footer
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text("Note: Prices are subject to change based on site inspection.", 14, finalY);
+    doc.text("Contact us for a detailed estimate and expert consultation.", 14, finalY + 6);
+
+    // Save PDF
+    doc.save("Repair_My_Concrete_Estimate.pdf");
+  };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
     if (name.startsWith("services.")) {
@@ -146,7 +197,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     try {
       const response = await fetch(API_URL);
       const data = await response.json();
-      setServices(data);
+      setServices(data.slice(2,7));
     } catch (error) {
       console.error("Error fetching services:", error);
     }
@@ -156,6 +207,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     return (
       <div className="pt-24 pb-16 md:pt-32 md:pb-24">
         <div className="container mx-auto px-4">
+          
           <div className="max-w-4xl mx-auto text-center">
             <div className="bg-green-50 text-green-800 p-8 rounded-lg mb-8">
               <svg
@@ -187,9 +239,14 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <div className="pt-24 pb-16 md:pt-32 md:pb-24">
       <div className="container mx-auto px-4">
+        
         <div className="max-w-4xl mx-auto">
+       
           <div className="text-center mb-12">
+  
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Request a Free Estimate</h1>
+         
+
             <p className="text-gray-600">
               Fill out the form below and our team will contact you to schedule your free estimate.
             </p>
@@ -199,6 +256,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Contact Details Section */}
               <div>
+         
                 <h2 className="text-xl font-bold mb-4 text-primary">Contact Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -317,6 +375,33 @@ const handleSubmit = async (e: React.FormEvent) => {
         <Label htmlFor={service._id}>{service.name}</Label>
       </div>
     ))}
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="other"
+          checked={isOtherChecked}
+          onCheckedChange={(checked) => {
+            setIsOtherChecked(checked as boolean);
+            if (!checked) setOtherService("");
+          }}
+        />
+        <Label htmlFor="other">Other</Label>
+      </div>
+      
+      {isOtherChecked && (
+       <Input
+       type="text"
+       placeholder="Enter other service"
+       value={otherService}
+       onChange={(e: any) => setOtherService(e.target.value)}
+       onBlur={() => {
+         if (otherService.trim()) {
+           handleCheckboxChange(`services.${otherService}`, true);
+         }
+       }}
+       className="mt-2"
+     />
+     
+      )}
   </div>
 </div>
 
@@ -366,7 +451,8 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <SelectContent>
                         <SelectItem value="residential">Residential</SelectItem>
                         <SelectItem value="commercial">Commercial</SelectItem>
-                      
+                        <SelectItem value="HOA">HOA</SelectItem>
+                        <SelectItem value="municipal">Municipal</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
