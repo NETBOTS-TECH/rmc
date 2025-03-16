@@ -10,7 +10,13 @@ connectDB();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+  
+    methods: ["GET", "POST"],
+    credentials: true
+},
+});
 
 // Middleware
 // app.use(cors());
