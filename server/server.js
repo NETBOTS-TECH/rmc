@@ -12,10 +12,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-  
+
     methods: ["GET", "POST"],
-    credentials: true
-},
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  },
 });
 
 // Middleware
