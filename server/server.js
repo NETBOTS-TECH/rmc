@@ -10,13 +10,7 @@ connectDB();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://repairmyconcrete.com",  // ✅ Match the allowed origin
-    methods: ["GET", "POST"],
-    credentials: true
-},
-});
+const io = new Server(server);
 
 // Middleware
 // app.use(cors());
