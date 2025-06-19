@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import ChatBot from "@/components/chat-bot";
 
-const API_URL = `${process.env.BASE_URL}/api/gallery`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/gallery`;
 
 interface ImageData {
   _id: string;
@@ -68,7 +68,7 @@ const Gallery = () => {
                 <CardContent className="p-2 w-full h-full flex flex-col justify-between items-center">
                   <div className="relative w-full h-[250px]">
                     <Image
-                      src={`${process.env.BASE_URL}${image.url}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${image.url}`}
                       alt={image.name}
                       layout="fill"
                       objectFit="cover"

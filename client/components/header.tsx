@@ -32,12 +32,12 @@ export default function Header() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await fetch(`${process.env.BASE_URL}/api/services`) // ✅ Correct URL format
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services`) // ✅ Correct URL format
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`)
         }
         const data = await response.json()
-          console.log("data",data)
+         const res=data.filter((service: { category: string }) => service.category === "residential")
         setResidentialServices(data.filter((service: { category: string }) => service.category === "residential"))
         setCommercialServices(data.filter((service: { category: string }) => service.category === "commercial"))
       } catch (error) {
@@ -47,7 +47,6 @@ export default function Header() {
   
     fetchServices()
   }, [isResidentialOpen,isCommercialOpen])
-  
 
   return (
     <>
@@ -311,6 +310,7 @@ export default function Header() {
               {menuData.mainMenu.map((item: any) => (
                 <Link key={item.id} href={item.url} className="text-gray-700 hover:text-primary font-medium transition-colors duration-200">
                   {item.label}
+                  <hr />
                 </Link>
               ))}
 
@@ -324,6 +324,7 @@ export default function Header() {
                   {residentialServices.map((service: any) => (
                     <Link key={service._id} href={`/description?id=${service._id}`} className="block hover:text-primary">
                       {service.name}
+                      <hr />
                     </Link>
                   ))}
                 </div>
@@ -339,6 +340,7 @@ export default function Header() {
                   {commercialServices.map((service: any) => (
                     <Link key={service._id} href={`/description?id=${service._id}`} className="block hover:text-primary">
                       {service.name}
+                      <hr />
                     </Link>
                   ))}
                 </div>

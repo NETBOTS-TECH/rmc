@@ -8,10 +8,10 @@ import { chatbotData } from "@/data/chatbot-data"
 import { useToast } from "@/components/ui/use-toast"
 import { io } from "socket.io-client"
 const messageSoundURL = "/sound/iphone_tone.mp3"; 
-const typingSoundURL = "/sound/typing.mp3"; // Example typing sound
+const typingSoundURL = "/sound/typing.mp3";
 import axios from "axios"
 import { usePathname } from "next/navigation"
-// Define message types
+
 type Message = {
   id: string
   type: "user" | "bot" | "agent"
@@ -45,41 +45,50 @@ export default function ChatBot() {
   const [socket, setSocket] = useState<any>(null)
   const [agentConnected, setAgentConnected] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
   const messageSoundRef = useRef<HTMLAudioElement | null>(null);
   const typingSoundRef = useRef<HTMLAudioElement | null>(null);
-const pathname = usePathname();
+  const pathname = usePathname();
+
+  // Initialize sounds
   useEffect(() => {
-    // Initialize sounds
     messageSoundRef.current = new Audio(messageSoundURL);
     typingSoundRef.current = new Audio(typingSoundURL);
   }, []);
 
-  const playMessageSound = () => {
-    if (messageSoundRef.current) {
-      messageSoundRef.current.play().catch((error) => console.error("Error playing message sound:", error));
-    }
-  };
-
-  const playTypingSound = () => {
-    if (typingSoundRef.current) {
-      typingSoundRef.current.play().catch((error) => console.error("Error playing typing sound:", error));
-    }
-  };
+  // Handle clicks outside the chatbot
   useEffect(() => {
-    // Initialize socket connection
-    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || process.env.BASE_URL);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen && 
+        chatContainerRef.current && 
+        !chatContainerRef.current.contains(event.target as Node)
+      ) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Initialize socket connection
+  useEffect(() => {
+    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || process.env.NEXT_PUBLIC_API_BASE_URL);
     setSocket(socketInstance);
+    
     const timer = setTimeout(() => {
       if (pathname === "/") {
         setIsOpen(true);
       }
     }, 3000);
-  
-    // Initial greeting and suggested questions
+
     const initialQuestions = chatbotData.slice(0, 3).map((item) => item.question);
     setSuggestedQuestions(initialQuestions);
-    // Define event handlers
+    
     const handleAgentMessage = (message:any) => {
       addMessage({
         id: Date.now().toString(),
@@ -99,50 +108,51 @@ const pathname = usePathname();
       playMessageSound();
     };
   
-    // Attach event listeners
     socketInstance.on("agent-message", handleAgentMessage);
     socketInstance.on("agent-connected", handleAgentConnected);
-    // socketInstance.on("agent-disconnected", handleAgentDisconnected);
-  
+
     return () => {
       clearTimeout(timer);
       socketInstance.off("agent-message", handleAgentMessage);
       socketInstance.off("agent-connected", handleAgentConnected);
-      // socketInstance.off("agent-disconnected", handleAgentDisconnected);
       socketInstance.disconnect();
     };
   }, []);
   
-
+  // Scroll to bottom when messages change
   useEffect(() => {
-    // Scroll to bottom when messages change
     scrollToBottom()
-  }, [])
+  }, [messages])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
- 
+  const playMessageSound = () => {
+    if (messageSoundRef.current) {
+      messageSoundRef.current.play().catch((error) => console.error("Error playing message sound:", error));
+    }
+  };
+
+  const playTypingSound = () => {
+    if (typingSoundRef.current) {
+      typingSoundRef.current.play().catch((error) => console.error("Error playing typing sound:", error));
+    }
+  };
 
   const addMessage = (message: Message) => {
     setMessages((prev) => [...prev, message])
-    // playMessageSound()
   }
 
   const simulateTyping = (text: string, type: "bot" | "agent" = "bot") => {
     const typingId = Date.now().toString()
-
-    // Add typing indicator
     setMessages((prev) => [...prev, { id: typingId, type, text: "", isTyping: true }])
     setIsTyping(true)
 
-    // Simulate typing delay (1-2 seconds based on message length)
     const typingDelay = Math.min(1000 + text.length * 10, 2000)
     playTypingSound();
 
     setTimeout(() => {
-      // Remove typing indicator and add actual message
       setMessages((prev) => prev.filter((m) => m.id !== typingId))
       addMessage({ id: Date.now().toString(), type, text })
       setIsTyping(false)
@@ -151,26 +161,20 @@ const pathname = usePathname();
   }
 
   const handleQuestionClick = (question: string) => {
-    // Add user question to messages
     addMessage({
       id: Date.now().toString(),
       type: "user",
       text: question,
     })
 
-    // Find answer in chatbot data
     const chatbotItem = chatbotData.find((item) => item.question === question)
 
     if (chatbotItem) {
-      // Simulate bot typing
       simulateTyping(chatbotItem.answer)
-
-      // Update suggested questions (exclude the one just asked)
       const newSuggestions = chatbotData
         .filter((item) => item.question !== question)
         .slice(0, 3)
         .map((item) => item.question)
-
       setSuggestedQuestions(newSuggestions)
     }
   }
@@ -179,7 +183,6 @@ const pathname = usePathname();
     if (!inputValue.trim()) return
 
     if (collectingUserInfo && currentUserInfoField) {
-      // Handle user info collection
       setUserInfo((prev) => ({
         ...prev,
         [currentUserInfoField]: inputValue,
@@ -191,16 +194,13 @@ const pathname = usePathname();
         text: inputValue,
       })
 
-      // Move to next field or complete collection
       const fields: (keyof UserInfo)[] = ["name", "email", "phone", "issue"]
       const currentIndex = fields.indexOf(currentUserInfoField)
 
       if (currentIndex < fields.length - 1) {
-        // Move to next field
         const nextField = fields[currentIndex + 1]
         setCurrentUserInfoField(nextField)
 
-        // Ask for next field
         let nextQuestion = ""
         switch (nextField) {
           case "email":
@@ -216,11 +216,9 @@ const pathname = usePathname();
 
         simulateTyping(nextQuestion)
       } else {
-        // All fields collected
         setCollectingUserInfo(false)
         setCurrentUserInfoField(null)
 
-        // Submit user info to backend
         fetch("/api/contact", {
           method: "POST",
           headers: {
@@ -233,8 +231,6 @@ const pathname = usePathname();
             simulateTyping(
               "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs.",
             )
-
-            // Show toast notification
             toast({
               title: "Contact Request Submitted",
               description: "We'll get back to you as soon as possible!",
@@ -243,33 +239,25 @@ const pathname = usePathname();
           })
           .catch((error) => {
             console.error("Error submitting contact info:", error)
-            // simulateTyping(
-            //   "I'm sorry, there was an error submitting your information. Please try again or call us directly at 720-555-1234.",
-            // )
           })
       }
     } else if (liveAgentRequested && agentConnected) {
-      // Send message to live agent
       addMessage({
         id: Date.now().toString(),
         type: "user",
         text: inputValue,
       });
-  
-      // Emit message to server
       socket.emit("client-message", {
         message: inputValue,
         userId: socket.id,
       });
     } else {
-      // Regular chatbot interaction
       addMessage({
         id: Date.now().toString(),
         type: "user",
         text: inputValue,
       })
 
-      // Check for keywords to trigger specific responses
       const lowerCaseInput = inputValue.toLowerCase()
 
       if (
@@ -286,7 +274,6 @@ const pathname = usePathname();
       ) {
         handleContactRequest()
       } else {
-        // Try to find a matching question in chatbot data
         const matchingItem = chatbotData.find(
           (item) =>
             item.question.toLowerCase().includes(lowerCaseInput) ||
@@ -323,33 +310,26 @@ const pathname = usePathname();
     const clientId = `User-${Math.floor(Math.random() * 1000)}`;
     socket.emit("register-client", clientId);
     setLiveAgentRequested(true);
-    if(!clientId)
-    {
-    simulateTyping("I'm connecting you with a live agent. This may take a moment...");
+    if(!clientId) {
+      simulateTyping("I'm connecting you with a live agent. This may take a moment...");
     }
-    // Request a live agent
     socket.emit("request-live-agent", { userId: socket.id });
   };
+
   const handleClose = () => {
     setIsOpen(false)
-
-    // If connected to a live agent, disconnect
     if (agentConnected) {
       socket.emit("client-disconnect")
       setAgentConnected(false)
     }
   }
+
   const handleSubmitUserInfo = async () => {
     try {
-      await axios.post(`${process.env.BASE_URL}/api/chat-user`, userInfo)
+      await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/chat-user`, userInfo)
       simulateTyping(
         "Thank you for providing your information! Our team will contact you shortly to discuss your concrete repair needs and will also send you an email."
       )
-      // toast({
-      //   title: "Contact Request Submitted",
-      //   description: "We'll get back to you as soon as possible!",
-      //   duration: 5000,
-      // })
     } catch (error) {
       console.error("Error submitting contact info:", error)
       simulateTyping(
@@ -363,11 +343,11 @@ const pathname = usePathname();
       handleSubmitUserInfo()
     }
   }, [collectingUserInfo])
+
   if (!showChatbot) {
     return null
   }
 
-  
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {!isOpen ? (
@@ -375,7 +355,7 @@ const pathname = usePathname();
           <MessageSquare className="h-6 w-6" />
         </Button>
       ) : (
-        <div className="bg-white rounded-lg shadow-xl w-80 sm:w-96 max-h-[500px] flex flex-col">
+        <div ref={chatContainerRef} className="bg-white rounded-lg shadow-xl w-80 sm:w-96 max-h-[500px] flex flex-col">
           <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
             <h3 className="font-bold">How can we help?</h3>
             <Button
@@ -398,18 +378,18 @@ const pathname = usePathname();
 
                 <div className="space-y-2">
                   <p className="text-gray-600 text-sm">Select a question or ask your own:</p>
+                  {/* <button
+                    onClick={handleContactRequest}
+                    className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
+                  >
+                    I'd like to be contacted by your team
+                  </button>
                   <button
-                        onClick={handleContactRequest}
-                        className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
-                      >
-                        I'd like to be contacted by your team
-                      </button>
-                      <button
-                        onClick={handleLiveAgentRequest}
-                        className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
-                      >
-                        Connect me with a live agent
-                      </button>
+                    onClick={handleLiveAgentRequest}
+                    className="w-full text-left p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors duration-200 mb-1 text-sm text-primary"
+                  >
+                    Connect me with a live agent
+                  </button> */}
                   {suggestedQuestions.map((question, index) => (
                     <button
                       key={index}
@@ -456,11 +436,9 @@ const pathname = usePathname();
                   </div>
                 ))}
 
-                {/* Suggested follow-up questions */}
                 {!isTyping &&
                   !collectingUserInfo &&
                   !agentConnected && 
-         
                   messages.length > 0 &&
                   messages[messages.length - 1].type === "bot" && (
                     <div className="space-y-2 mt-4">
@@ -486,7 +464,6 @@ const pathname = usePathname();
                           {question}
                         </button>
                       ))}
-                      
                     </div>
                   )}
 
@@ -525,5 +502,4 @@ const pathname = usePathname();
       )}
     </div>
   )
-}
-
+} 

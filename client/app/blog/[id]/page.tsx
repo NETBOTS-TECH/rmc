@@ -26,7 +26,7 @@ export default function BlogDetail() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await fetch(`${process.env.BASE_URL}/api/blogs/${id}`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/blogs/${id}`)
         const data = await response.json()
 
         if (data.success) {

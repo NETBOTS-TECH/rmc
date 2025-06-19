@@ -5,12 +5,13 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const API_URL = `${process.env.BASE_URL}/api/services` // Update if hosted elsewhere
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services`
+ // Update if hosted elsewhere
 
 interface Service {
   _id: string
   title: string
-  shortDescription: string
+  shortDescription: string 
   image: string
   slug: string
 }
@@ -28,6 +29,7 @@ export default function ServicesSection() {
         const data: Service[] = await response.json()
         setServices(data.slice(2, 6)) // Only show 6 services
       } catch (err) {
+        console.log("Error in Service :",err)
         setError("Error fetching services")
       } finally {
         setLoading(false)

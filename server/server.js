@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const http = require("http");
+const cors = require("cors"); // ✅ Add this line
 const { Server } = require("socket.io");
 const connectDB = require("./config/db");
 
@@ -8,8 +9,21 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// ✅ Allow requests from your frontend
+app.use(cors({
+  origin: "http://localhost:3000", // replace with your frontend URL in production
+  credentials: true
+}));
+
 const server = http.createServer(app);
-const io = new Server(server); // ❌ Removed CORS config here
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", // ✅ Also allow socket.io CORS
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 // Middleware
 app.use(express.json());
@@ -30,47 +44,39 @@ app.get("/", (req, res) => {
 });
 
 // 🟢 WebSocket Logic
-let agents = {}; // { socketId: agentId }
-let clients = {}; // { socketId: clientId }
-let clientAgentPairs = {}; // { clientId: agentId }
+let agents = {};
+let clients = {};
+let clientAgentPairs = {};
 
-// 🔹 Handle user connection
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // ✅ Register Clients
   socket.on("register-client", (clientId) => {
     clients[socket.id] = clientId;
     console.log(`Client Registered: ${clientId}`);
-    io.emit("update-clients", Object.values(clients)); // Notify agents
+    io.emit("update-clients", Object.values(clients));
   });
 
-  // ✅ Register Agents
   socket.on("register-agent", (agentId) => {
     agents[socket.id] = agentId;
     console.log(`Agent Registered: ${agentId}`);
-    io.emit("update-agents", Object.values(agents)); // Notify clients
+    io.emit("update-agents", Object.values(agents));
   });
 
-  // ✅ Handle Client Requesting Live Agent
   socket.on("request-live-agent", ({ userId }) => {
     const clientId = clients[socket.id] || userId;
     if (!clientId) return;
-  
-    // Find an available agent
+
     const availableAgentSocketId = Object.keys(agents).find(
       (socketId) => !Object.values(clientAgentPairs).includes(agents[socketId])
     );
-  
+
     if (availableAgentSocketId) {
       const agentId = agents[availableAgentSocketId];
       clientAgentPairs[clientId] = agentId;
-      
-      // Notify both parties
+
       io.to(availableAgentSocketId).emit("client-assigned", { clientId });
       io.to(socket.id).emit("agent-connected");
-      
-      // Send response to client
       io.to(socket.id).emit("agent-response", { assigned: true });
       console.log(`Assigned Agent ${agentId} to Client ${clientId}`);
     } else {
@@ -79,31 +85,29 @@ io.on("connection", (socket) => {
     }
   });
 
-  // ✅ Handle User Messages (Client → Agent)
   socket.on("client-message", ({ message, userId }) => {
     const clientId = clients[socket.id] || userId;
     const agentId = clientAgentPairs[clientId];
-    
+
     if (agentId) {
       const agentSocketId = Object.keys(agents).find(
         (socketId) => agents[socketId] === agentId
       );
       if (agentSocketId) {
-        io.to(agentSocketId).emit("receive-message", { 
-          sender: clientId, 
-          message, 
-          chatId: clientId 
+        io.to(agentSocketId).emit("receive-message", {
+          sender: clientId,
+          message,
+          chatId: clientId
         });
       }
     }
   });
 
-  // ✅ Handle Agent Messages (Agent → Client)
   socket.on("agent-message", ({ agentId, message }) => {
     const clientId = Object.keys(clientAgentPairs).find(
       (cId) => clientAgentPairs[cId] === agentId
     );
-    
+
     if (clientId) {
       const clientSocketId = Object.keys(clients).find(
         (socketId) => clients[socketId] === clientId
@@ -114,18 +118,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  // ✅ Handle Disconnection
   socket.on("disconnect", () => {
     if (agents[socket.id]) {
       const agentId = agents[socket.id];
       console.log(`Agent disconnected: ${agentId}`);
-      
-      // Remove agent from all pairings
+
       Object.keys(clientAgentPairs).forEach(clientId => {
         if (clientAgentPairs[clientId] === agentId) {
           delete clientAgentPairs[clientId];
-          // Notify the client that their agent has disconnected
-          const clientSocket = Object.keys(clients).find((socketId) => clients[socketId] === clientId);
+          const clientSocket = Object.keys(clients).find(
+            (socketId) => clients[socketId] === clientId
+          );
           if (clientSocket) {
             io.to(clientSocket).emit("agent-disconnected");
           }
@@ -133,16 +136,13 @@ io.on("connection", (socket) => {
       });
 
       delete agents[socket.id];
-      io.emit("update-agents", Object.values(agents)); // Notify clients
+      io.emit("update-agents", Object.values(agents));
     } else if (clients[socket.id]) {
       const clientId = clients[socket.id];
       console.log(`Client disconnected: ${clientId}`);
-
-      // Remove client from all pairings
       delete clientAgentPairs[clientId];
-
       delete clients[socket.id];
-      io.emit("update-clients", Object.values(clients)); // Notify agents
+      io.emit("update-clients", Object.values(clients));
     }
   });
 });

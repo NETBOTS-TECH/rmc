@@ -23,7 +23,7 @@ export default function Testimonials() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const res = await fetch(`${process.env.BASE_URL}/api/testimonials`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/testimonials`);
         const data = await res.json();
         setTestimonials(data);
       } catch (error) {
@@ -78,7 +78,7 @@ export default function Testimonials() {
                 <div className="bg-white rounded-lg shadow-md p-5 md:p-6">
                   <div className="flex items-center mb-4">
                     <img
-                      src={testimonial.image ? `${process.env.BASE_URL}/${testimonial.image}` : "/placeholder.svg"}
+                      src={testimonial.image ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${testimonial.image}` : "/placeholder.svg"}
                       alt={testimonial.name}
                       className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover mr-3 md:mr-4"
                     />

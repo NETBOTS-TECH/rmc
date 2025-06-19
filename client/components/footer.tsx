@@ -11,7 +11,7 @@ export default function Footer() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const response = await fetch(`${process.env.BASE_URL}/api/services`); // Replace with actual API URL
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services`); // Replace with actual API URL
         const data = await response.json();
         setServices(data); // Assuming API returns an array of services
       } catch (error) {

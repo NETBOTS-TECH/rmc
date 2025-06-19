@@ -46,7 +46,7 @@ export default function ContactPage() {
     try {
       const updatedFormData = { ...formData, status: "new" };
  console.log("object,", updatedFormData)
-      const response = await axios.post(`${process.env.BASE_URL}/api/contacts`, updatedFormData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contacts`, updatedFormData, {
         headers: {
           "Content-Type": "application/json",
         },

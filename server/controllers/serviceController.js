@@ -21,8 +21,10 @@ console.log(image)
 exports.getAllServices = async (req, res) => {
   try {
     const services = await Service.find().sort({_id:-1});
+    console.log("Services are :", services)
     res.json(services);
   } catch (error) {
+    console.log("service error ",error)
     res.status(500).json({ message: "Error fetching services" });
   }
 };
@@ -34,7 +36,7 @@ exports.getServiceById = async (req, res) => {
 
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
-    }
+    }  
 
     // Fetch related services in the same category, excluding the current service
     const relatedServices = await Service.find({

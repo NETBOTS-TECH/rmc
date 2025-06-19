@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload, X, FileText } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import ChatBot from "@/components/chat-bot"
-const API_URL = `${process.env.BASE_URL}/api/services/`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services/`;
 export default function EstimatePage() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -169,7 +169,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     // Send to API using Axios
-    const response = await axios.post(`${process.env.BASE_URL}/api/estimates`, formDataToSend, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/estimates`, formDataToSend, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 

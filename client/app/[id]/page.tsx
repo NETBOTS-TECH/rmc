@@ -34,7 +34,7 @@ export default function ServicePage() {
           setLoading(true);
           setError(null);
   
-          const { data } = await axios.get(`${process.env.BASE_URL}/api/services/${serviceId}`);
+          const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services/${serviceId}`);
           setService(data.service);
           setRelatedServices(data.relatedServices);
         } catch (err) {

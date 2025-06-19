@@ -27,7 +27,7 @@ export default function Hero() {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch(`${process.env.BASE_URL}/api/services`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services`);
       const data = await response.json();
 
       // Filter and sort services by predefined order

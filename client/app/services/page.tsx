@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ChatBot from "@/components/chat-bot"
 
-const API_URL = `${process.env.BASE_URL}/api/services` // Change this if hosted elsewhere
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services` // Change this if hosted elsewhere
 
 interface Service {
   _id: string

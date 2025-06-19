@@ -11,7 +11,7 @@ export default function BlogList() {
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const response = await fetch(`${process.env.BASE_URL}/api/blogs`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/blogs`);
         const data = await response.json();
         setBlogs(data);
       } catch (error) {

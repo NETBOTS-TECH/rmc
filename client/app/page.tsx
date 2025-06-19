@@ -6,6 +6,7 @@ import Testimonials from "@/components/testimonials"
 import StatsSection from "@/components/stats-section"
 import CallToAction from "@/components/call-to-action"
 import ChatBot from "@/components/chat-bot"
+import BlogList from "./blog/page"
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <ProjectsGallery />
       <StatsSection />
       <Testimonials />
+      <BlogList/>
       {/* <CallToAction /> */}
       <ChatBot />
       
