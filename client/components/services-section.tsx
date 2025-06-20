@@ -62,20 +62,20 @@ export default function ServicesSection() {
           {services.map((service: any) => (
             <div
               key={service._id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+              className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1  "
             >
               <div className="aspect-video overflow-hidden">
                 <img
                   src={service.image || "/placeholder.svg"}
                   alt={service.title}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105 "
                 />
               </div>
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold mb-3">{service.name}</h3>
+                <h3 className="text-3xl font-bold mb-3 ">{service.name}</h3>
                 <p className="text-gray-600 mb-4 flex-grow">
                   {service.description.length > 100
-                    ? service.description.substring(0, 100) + "..."
+                    ? service.description.substring(0, 400) + "..."
                     : service.description}
                 </p>
                 <Link

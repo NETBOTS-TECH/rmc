@@ -125,18 +125,19 @@ export default function Header() {
 
       {/* Main Header */}
       <header
-        className={`sticky top-0 left-0 right-0 z-50 pt-6 pb-6 transition-all duration-300 ${
+        className={`sticky top-0 left-0 right-0 z-50 pt-4 pb-2 transition-all duration-300 ${
           isScrolled ? "bg-white shadow-md py-2" : "bg-white py-4"
         }`}
       >
-        <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 flex items-center justify-between  ">
           <Link href="/" className="flex items-center">
             <Image
               src={logo} // Path relative to public/
               alt="Repair My Concrete Logo"
               width={80} // adjust size as needed
-              height={25}
+              height={30}
               priority // optional: helps with performance
+              className="ml-5"
             />
           </Link>
 
