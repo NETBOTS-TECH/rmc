@@ -1,11 +1,28 @@
-"use client"; // Ensure this runs in the client side
-
-import { usePathname } from "next/navigation"; // Import usePathname
-import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import { Inter } from "next/font/google";
+import { Anton, Lato } from "next/font/google";
+import HeaderFooterLayout from "@/components/HeaderFooterLayout";
 import { Toaster } from "@/components/ui/toaster";
+
+const anton = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-anton",
+});
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-lato",
+});
+
+export const metadata = {
+  title: "repairmyconcrete",
+  description: "Expert concrete and foundation repair services for residential and commercial properties. Trusted solutions for cracks, leveling, waterproofing, and more.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,16 +31,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname(); // Get the current route
-  const isAdminLayout = pathname.startsWith("/admin") || pathname === "/login"; // Check if the layout is admin
-
   return (
-    <html lang="en">
+    <html lang="en" className={`${anton.variable} ${lato.variable}`}>
       <body className={inter.className}>
-        {/* Exclude Header & Footer for admin layout */}
-        {!isAdminLayout && <Header />}
-        {children}
-        {!isAdminLayout && <Footer />}
+        <HeaderFooterLayout>{children}</HeaderFooterLayout>
         <Toaster />
       </body>
     </html>

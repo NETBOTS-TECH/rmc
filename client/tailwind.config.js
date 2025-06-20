@@ -17,6 +17,10 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        anton: ["var(--font-anton)", "Helvetica", "Arial", "Lucida", "sans-serif"],
+        lato: ["var(--font-lato)", "Helvetica", "Arial", "Lucida", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -51,6 +55,8 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        bone: "#E8E6E3",        // ✅ Added for main/sub-heading text
+        softPink: "#FF7C7E",    // ✅ Added for CTA button text
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -74,5 +80,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
-
+};
