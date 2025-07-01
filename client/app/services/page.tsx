@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import ChatBot from "@/components/chat-bot"
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services` // Change this if hosted elsewhere
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/services`
 
 interface Service {
   _id: string
@@ -26,6 +26,8 @@ export default function ServicesPage() {
     const fetchServices = async () => {
       try {
         const response = await fetch(API_URL)
+                console.log("API_URL:", API_URL) // ✅ Log to confirm it's correct
+
         if (!response.ok) throw new Error("Failed to fetch services")
         const data: Service[] = await response.json()
 
