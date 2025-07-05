@@ -123,7 +123,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main Header */}
+      {/* Main Header */} 
       <header
         className={`sticky top-0 left-0 right-0 z-50 pt-4 pb-2 transition-all duration-300 ${
           isScrolled ? "bg-white shadow-md py-2" : "bg-white py-4"
