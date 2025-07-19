@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const http = require("http");
-const cors = require("cors");
+const cors = require("cors"); // ✅ Add this line
 const { Server } = require("socket.io");
 const connectDB = require("./config/db");
 
@@ -10,27 +10,26 @@ connectDB();
 
 const app = express();
 
-// ✅ Setup CORS with dynamic origin
+// ✅ Allow requests from your frontend
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+  origin: "http://localhost:3000", // replace with your frontend URL in production
   credentials: true
 }));
 
-// ✅ HTTP + Socket Server
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+    origin: "http://localhost:3000", // ✅ Also allow socket.io CORS
     methods: ["GET", "POST"],
-    credentials: true,
+    credentials: true
   }
 });
 
-// ✅ Express Middleware
+// Middleware
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// ✅ API Routes
+// Routes
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/api/services", require("./routes/serviceRoutes"));
 app.use("/api/estimates", require("./routes/estimateRoutes"));
@@ -44,7 +43,7 @@ app.get("/", (req, res) => {
   res.send("🚀 API is running...");
 });
 
-// ✅ WebSocket (Socket.IO) logic
+// 🟢 WebSocket Logic
 let agents = {};
 let clients = {};
 let clientAgentPairs = {};
@@ -148,8 +147,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Start the Server
+// Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
