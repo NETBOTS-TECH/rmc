@@ -26,7 +26,7 @@ export default function ServicesPage() {
     const fetchServices = async () => {
       try {
         const response = await fetch(API_URL)
-                console.log("API_URL:", API_URL) // ✅ Log to confirm it's correct
+                // console.log("API_URL:", API_URL) // ✅ Log to confirm it's correct
 
         if (!response.ok) throw new Error("Failed to fetch services")
         const data: Service[] = await response.json()
